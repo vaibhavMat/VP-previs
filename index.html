@@ -177,13 +177,18 @@
             <button class="btn-blue" id="unitToggle" onclick="toggleUnit()">Imperial (ft/in)</button>
         </div>
 
+        <div class="control-group">
+            <label>Measurement Tool</label>
+            <button class="btn-blue" id="measurementToggle" onclick="toggleMeasurement()">Activate Measurement</button>
+        </div>
+
         <button class="btn-green" onclick="focusOnObject()">Focus on Object</button>
         <button class="btn-purple" onclick="takeScreenshot()">Take Screenshot</button>
 
         <div class="help-text">
             <p>Navigation: WASD + Mouse</p>
             <p>Vertical: Q (down) / E (up)</p>
-            <p>Measure: Click A → Click B → Click away</p>
+            <p id="measurementHelp" style="display: none; color: #fbbf24;">Measurement Active: Click A → Click B → Click away to clear</p>
         </div>
     </div>
 
@@ -204,6 +209,7 @@
         let isMetric = false;
         let moveSpeed = 0.5;
         let modelScale = 1.0;
+        let measurementMode = false;
 
         const measurement = {
             pointA: null,
@@ -314,9 +320,11 @@
                     }
                 });
                 model.name = '_samplemodel';
+                model.position.set(0, 0.5, -1); // Position it in front of camera
+                model.scale.setScalar(1);
                 uploadedModel = model;
                 scene.add(model);
-                console.log('Sample model loaded');
+                console.log('Sample model loaded at position:', model.position);
             }, undefined, (error) => {
                 console.error('Error loading sample model:', error);
             });
@@ -340,26 +348,31 @@
             if (e.key === 'e' || e.key === 'E') firstPerson.moveUp = false;
         }
 
+        let yaw = 0;
+        let pitch = 0;
+
         function onMouseMove(e) {
             if (firstPerson.enabled && document.pointerLockElement === renderer.domElement) {
                 const mouseX = e.movementX || 0;
                 const mouseY = e.movementY || 0;
                 
-                camera.rotation.y -= mouseX * 0.002;
-                camera.rotation.x -= mouseY * 0.002;
-                camera.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, camera.rotation.x));
+                yaw += mouseX * 0.002;
+                pitch += mouseY * 0.002;
+                pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitch));
+                
+                camera.rotation.set(pitch, yaw, 0, 'YXZ');
             }
         }
 
         function onCanvasClick(e) {
-            // Check if clicking for pointer lock
-            if (firstPerson.enabled && document.pointerLockElement !== renderer.domElement) {
+            // Check if clicking for pointer lock (only in first person mode when not measuring)
+            if (firstPerson.enabled && !measurementMode && document.pointerLockElement !== renderer.domElement) {
                 renderer.domElement.requestPointerLock();
                 return;
             }
 
-            // Measurement tool
-            if (document.pointerLockElement !== renderer.domElement) {
+            // Measurement tool - only active if measurement mode is on
+            if (measurementMode && document.pointerLockElement !== renderer.domElement) {
                 const rect = renderer.domElement.getBoundingClientRect();
                 const mouse = new THREE.Vector2(
                     ((e.clientX - rect.left) / rect.width) * 2 - 1,
@@ -447,8 +460,18 @@
             // First-person movement
             if (firstPerson.enabled) {
                 const speed = moveSpeed * delta * 10;
-                const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
-                const right = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
+                
+                // Create forward and right vectors based on yaw only (no pitch)
+                const forward = new THREE.Vector3(
+                    -Math.sin(yaw),
+                    0,
+                    -Math.cos(yaw)
+                );
+                const right = new THREE.Vector3(
+                    Math.cos(yaw),
+                    0,
+                    -Math.sin(yaw)
+                );
                 
                 if (firstPerson.moveForward) camera.position.addScaledVector(forward, speed);
                 if (firstPerson.moveBackward) camera.position.addScaledVector(forward, -speed);
@@ -551,6 +574,28 @@
             
             // Update measurement if exists
             if (measurement.pointA && measurement.pointB) {
+                clearMeasurement();
+            }
+        }
+
+        function toggleMeasurement() {
+            measurementMode = !measurementMode;
+            const btn = document.getElementById('measurementToggle');
+            const helpText = document.getElementById('measurementHelp');
+            
+            if (measurementMode) {
+                btn.textContent = 'Deactivate Measurement';
+                btn.style.background = '#dc2626'; // Red when active
+                helpText.style.display = 'block';
+                
+                // Exit pointer lock to allow clicking
+                if (document.pointerLockElement) {
+                    document.exitPointerLock();
+                }
+            } else {
+                btn.textContent = 'Activate Measurement';
+                btn.style.background = '#2563eb'; // Blue when inactive
+                helpText.style.display = 'none';
                 clearMeasurement();
             }
         }
