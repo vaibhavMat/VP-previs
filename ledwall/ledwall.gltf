@@ -1,0 +1,217 @@
+{
+	"asset":
+	{
+		"version": "2.0",
+		"generator": "Unreal Engine 5.6.1"
+	},
+	"scene": 0,
+	"accessors": [
+		{
+			"bufferView": 0,
+			"count": 300,
+			"type": "SCALAR",
+			"componentType": 5121
+		},
+		{
+			"bufferView": 1,
+			"count": 200,
+			"type": "VEC3",
+			"componentType": 5126,
+			"min": [ -11.0628614, -0.0416917615, 2.43493605 ],
+			"max": [ 0.979630768, 5.29602671, 8.36950588 ]
+		},
+		{
+			"bufferView": 2,
+			"count": 200,
+			"type": "VEC3",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 3,
+			"count": 200,
+			"type": "VEC4",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 4,
+			"count": 200,
+			"type": "VEC2",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 5,
+			"count": 150,
+			"type": "SCALAR",
+			"componentType": 5121
+		},
+		{
+			"bufferView": 6,
+			"count": 52,
+			"type": "VEC3",
+			"componentType": 5126,
+			"min": [ -5.67874432, 5.02409792, -4.80492735 ],
+			"max": [ 5.67874622, 5.02409792, 0.792072594 ]
+		},
+		{
+			"bufferView": 7,
+			"count": 52,
+			"type": "VEC3",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 8,
+			"count": 52,
+			"type": "VEC4",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 9,
+			"count": 52,
+			"type": "VEC2",
+			"componentType": 5126
+		}
+	],
+	"buffers": [
+		{
+			"uri": "ledwall.bin",
+			"byteLength": 12548
+		}
+	],
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 300,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteLength": 2400,
+			"byteOffset": 300,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 2400,
+			"byteOffset": 2700,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 3200,
+			"byteOffset": 5100,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 1600,
+			"byteOffset": 8300,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 150,
+			"byteOffset": 9900,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteLength": 624,
+			"byteOffset": 10052,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 624,
+			"byteOffset": 10676,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 832,
+			"byteOffset": 11300,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 416,
+			"byteOffset": 12132,
+			"target": 34962
+		}
+	],
+	"materials": [
+		{
+			"name": "NewMediaPlayer_Video_Mat_Inst",
+			"pbrMetallicRoughness":
+			{
+				"baseColorFactor": [ 0, 0, 0, 1 ],
+				"metallicFactor": 0,
+				"roughnessFactor": 0.5
+			},
+			"doubleSided": true
+		},
+		{
+			"name": "NewMediaPlayer_Video_Mat",
+			"pbrMetallicRoughness":
+			{
+				"baseColorFactor": [ 0, 0, 0, 1 ],
+				"metallicFactor": 0,
+				"roughnessFactor": 0.5
+			},
+			"doubleSided": true
+		}
+	],
+	"meshes": [
+		{
+			"name": "XR_stage_update",
+			"primitives": [
+				{
+					"attributes":
+					{
+						"POSITION": 1,
+						"NORMAL": 2,
+						"TANGENT": 3,
+						"TEXCOORD_0": 4
+					},
+					"indices": 0,
+					"material": 0
+				}
+			]
+		},
+		{
+			"name": "Top_screen",
+			"primitives": [
+				{
+					"attributes":
+					{
+						"POSITION": 6,
+						"NORMAL": 7,
+						"TANGENT": 8,
+						"TEXCOORD_0": 9
+					},
+					"indices": 5,
+					"material": 1
+				}
+			]
+		}
+	],
+	"nodes": [
+		{
+			"name": "XR_stage_update",
+			"translation": [ 0.0123256398, -0.0310887005, -0.357301831 ],
+			"mesh": 0
+		},
+		{
+			"name": "Top_screen",
+			"translation": [ -5.04161501, -0.0545113496, 2.94680786 ],
+			"rotation": [ 0, 1, -0, 8.72664607e-09 ],
+			"scale": [ 1.06031299, 1.06031299, 1.06031299 ],
+			"mesh": 1
+		}
+	],
+	"scenes": [
+		{
+			"name": "XR_stage",
+			"nodes": [ 0, 1 ]
+		}
+	]
+}
