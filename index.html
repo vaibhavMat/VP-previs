@@ -312,7 +312,7 @@
             });
 
             // Load sample model
-            loader.load('./Samplemodel/samplemodel.gltf', (gltf) => {
+            loader.load('./samplemodel/samplemodel.gltf', (gltf) => {
                 const model = gltf.scene;
                 model.traverse((child) => {
                     if (child.isMesh) {
