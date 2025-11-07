@@ -288,11 +288,13 @@
             if (uploadedModel && ledWall) {
                 const ledBox = new THREE.Box3().setFromObject(ledWall);
                 const ledCenter = ledBox.getCenter(new THREE.Vector3());
+                const ledMin = ledBox.min;
                 
-                // Position model so its bottom-center is at LED wall center
-                uploadedModel.position.copy(ledCenter);
+                // Position model at the bottom-center of the LED wall
+                // Use LED wall's center X and Z, but bottom Y position
+                uploadedModel.position.set(ledCenter.x, ledMin.y, ledCenter.z);
                 
-                console.log('Model positioned at LED wall center:', ledCenter);
+                console.log('Model positioned at LED wall bottom-center:', uploadedModel.position);
             }
         }
 
