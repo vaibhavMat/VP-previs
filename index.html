@@ -288,7 +288,10 @@
             if (uploadedModel && ledWall) {
                 const ledBox = new THREE.Box3().setFromObject(ledWall);
                 const ledCenter = ledBox.getCenter(new THREE.Vector3());
+                
+                // Position model so its bottom-center is at LED wall center
                 uploadedModel.position.copy(ledCenter);
+                
                 console.log('Model positioned at LED wall center:', ledCenter);
             }
         }
@@ -348,16 +351,18 @@
                     }
                 });
                 
-                // Calculate bounding box to get center
+                // Calculate bounding box to get center and bottom
                 const box = new THREE.Box3().setFromObject(model);
                 const center = box.getCenter(new THREE.Vector3());
+                const min = box.min;
                 
-                // Create a group to act as the pivot point
+                // Create a group to act as the pivot point (at bottom-center)
                 const pivotGroup = new THREE.Group();
                 pivotGroup.name = '_samplemodel';
                 
-                // Offset the model so its center is at the group's origin
-                model.position.set(-center.x, -center.y, -center.z);
+                // Offset the model so its bottom-center is at the group's origin
+                // Center it on X and Z, but align bottom to Y=0
+                model.position.set(-center.x, -min.y, -center.z);
                 
                 pivotGroup.add(model);
                 pivotGroup.scale.setScalar(1);
@@ -590,11 +595,12 @@
                     }
                 });
 
-                // Calculate bounding box to get center
+                // Calculate bounding box to get center and bottom
                 const box = new THREE.Box3().setFromObject(model);
                 const center = box.getCenter(new THREE.Vector3());
+                const min = box.min;
                 
-                // Create a group to act as the pivot point
+                // Create a group to act as the pivot point (at bottom-center)
                 const pivotGroup = new THREE.Group();
                 
                 // Preserve scale from previous model or use current slider value
@@ -606,8 +612,9 @@
                     pivotGroup.scale.setScalar(modelScale);
                 }
 
-                // Offset the model so its center is at the group's origin
-                model.position.set(-center.x, -center.y, -center.z);
+                // Offset the model so its bottom-center is at the group's origin
+                // Center it on X and Z, but align bottom to Y=0
+                model.position.set(-center.x, -min.y, -center.z);
                 
                 pivotGroup.add(model);
                 uploadedModel = pivotGroup;
