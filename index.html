@@ -289,12 +289,27 @@
                 const ledBox = new THREE.Box3().setFromObject(ledWall);
                 const ledCenter = ledBox.getCenter(new THREE.Vector3());
                 const ledMin = ledBox.min;
+                const ledMax = ledBox.max;
                 
-                // Position model at the bottom-center of the LED wall
-                // Use LED wall's center X and Z, but bottom Y position
-                uploadedModel.position.set(ledCenter.x, ledMin.y, ledCenter.z);
+                // Calculate LED wall forward direction (assume it faces +Z or -Z)
+                const ledDepth = ledMax.z - ledMin.z;
+                const ledWidth = ledMax.x - ledMin.x;
                 
-                console.log('Model positioned at LED wall bottom-center:', uploadedModel.position);
+                // Determine which way LED wall faces based on its dimensions
+                let offsetZ;
+                if (ledDepth < ledWidth) {
+                    // LED wall is wider than deep, so it's facing forward/backward
+                    // Place model in front (positive Z direction)
+                    offsetZ = ledMax.z + 1; // 1 unit in front
+                } else {
+                    // LED wall might be rotated, use center Z
+                    offsetZ = ledCenter.z + 1;
+                }
+                
+                // Position model at the bottom-center of the LED wall, in front
+                uploadedModel.position.set(ledCenter.x, ledMin.y, offsetZ);
+                
+                console.log('Model positioned in front of LED wall:', uploadedModel.position);
             }
         }
 
