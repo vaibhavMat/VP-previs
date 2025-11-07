@@ -284,6 +284,15 @@
             animate();
         }
 
+        function positionModelAtLedWall() {
+            if (uploadedModel && ledWall) {
+                const ledBox = new THREE.Box3().setFromObject(ledWall);
+                const ledCenter = ledBox.getCenter(new THREE.Vector3());
+                uploadedModel.position.copy(ledCenter);
+                console.log('Model positioned at LED wall center:', ledCenter);
+            }
+        }
+
         function loadModels() {
             const loader = new THREE.GLTFLoader();
 
@@ -330,7 +339,7 @@
                 console.error('Error loading LED wall:', error);
             });
 
-            // Load sample model
+            // Load sample model - will be positioned after LED wall loads
             loader.load('./samplemodel/samplemodel.gltf', (gltf) => {
                 const model = gltf.scene;
                 model.traverse((child) => {
@@ -346,7 +355,6 @@
                 // Create a group to act as the pivot point
                 const pivotGroup = new THREE.Group();
                 pivotGroup.name = '_samplemodel';
-                pivotGroup.position.set(0, 0.5, -1);
                 
                 // Offset the model so its center is at the group's origin
                 model.position.set(-center.x, -center.y, -center.z);
@@ -356,7 +364,11 @@
                 
                 uploadedModel = pivotGroup;
                 scene.add(pivotGroup);
-                console.log('Sample model loaded at position:', pivotGroup.position);
+                
+                // Position at LED wall center (will be called when LED wall loads)
+                positionModelAtLedWall();
+                
+                console.log('Sample model loaded');
             }, undefined, (error) => {
                 console.error('Error loading sample model:', error);
             });
@@ -585,15 +597,12 @@
                 // Create a group to act as the pivot point
                 const pivotGroup = new THREE.Group();
                 
+                // Preserve scale from previous model or use current slider value
                 if (uploadedModel) {
-                    const oldPos = uploadedModel.position.clone();
                     const oldScale = uploadedModel.scale.x;
                     scene.remove(uploadedModel);
-                    pivotGroup.position.copy(oldPos);
                     pivotGroup.scale.setScalar(oldScale);
                 } else {
-                    // If no previous model, use default position
-                    pivotGroup.position.set(0, 0.5, -1);
                     pivotGroup.scale.setScalar(modelScale);
                 }
 
@@ -603,6 +612,9 @@
                 pivotGroup.add(model);
                 uploadedModel = pivotGroup;
                 scene.add(pivotGroup);
+                
+                // Position at LED wall center
+                positionModelAtLedWall();
             });
         }
 
