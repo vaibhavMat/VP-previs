@@ -291,45 +291,25 @@
                 const ledMin = ledBox.min;
                 const ledMax = ledBox.max;
                 
-                // Get LED wall normal/facing direction from its parent transform
-                const ledWallParent = ledWall.parent;
-                const ledNormal = new THREE.Vector3(0, 0, 1); // Default forward
-                ledNormal.applyQuaternion(ledWallParent.quaternion);
+                // Calculate LED wall forward direction (assume it faces +Z or -Z)
+                const ledDepth = ledMax.z - ledMin.z;
+                const ledWidth = ledMax.x - ledMin.x;
                 
-                // Place model 1 unit in front of LED wall (opposite to its normal)
-                const offsetDistance = 1.5;
-                const offsetPosition = ledCenter.clone().add(ledNormal.multiplyScalar(offsetDistance));
+                // Determine which way LED wall faces based on its dimensions
+                let offsetZ;
+                if (ledDepth < ledWidth) {
+                    // LED wall is wider than deep, so it's facing forward/backward
+                    // Place model in front (positive Z direction)
+                    offsetZ = ledMax.z + 1; // 1 unit in front
+                } else {
+                    // LED wall might be rotated, use center Z
+                    offsetZ = ledCenter.z + 1;
+                }
                 
-                // Position model at bottom of LED wall, in front
-                uploadedModel.position.set(offsetPosition.x, ledMin.y, offsetPosition.z);
+                // Position model at the bottom-center of the LED wall, in front
+                uploadedModel.position.set(ledCenter.x, ledMin.y, offsetZ);
                 
                 console.log('Model positioned in front of LED wall:', uploadedModel.position);
-            }
-        }
-        
-        function positionCameraInFrontOfLedWall() {
-            if (ledWall && camera) {
-                const ledBox = new THREE.Box3().setFromObject(ledWall);
-                const ledCenter = ledBox.getCenter(new THREE.Vector3());
-                
-                // Get LED wall forward direction
-                const ledWallParent = ledWall.parent;
-                const ledNormal = new THREE.Vector3(0, 0, 1);
-                ledNormal.applyQuaternion(ledWallParent.quaternion);
-                
-                // Position camera in front of LED wall
-                const cameraDistance = 5;
-                const cameraPosition = ledCenter.clone().add(ledNormal.multiplyScalar(cameraDistance));
-                
-                camera.position.set(cameraPosition.x, ledCenter.y, cameraPosition.z);
-                camera.lookAt(ledCenter);
-                
-                // Set initial yaw and pitch for first-person controls
-                yaw = Math.atan2(ledCenter.x - cameraPosition.x, ledCenter.z - cameraPosition.z);
-                pitch = 0;
-                camera.rotation.set(pitch, yaw, 0, 'YXZ');
-                
-                console.log('Camera positioned in front of LED wall');
             }
         }
 
