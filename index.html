@@ -379,6 +379,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
     <script>
@@ -555,11 +556,15 @@
             });
 
             // Load sample model - will be positioned after LED wall loads
-            loader.load('./samplemodel/samplemodel.gltf', (gltf) => {
-                const model = gltf.scene;
+            const objLoader = new THREE.OBJLoader();
+            objLoader.load('./man.obj', (object) => {
+                const model = object;
                 model.traverse((child) => {
                     if (child.isMesh) {
-                        child.material.roughness = 1;
+                        child.material = new THREE.MeshStandardMaterial({
+                            color: 0xcccccc,
+                            roughness: 1
+                        });
                     }
                 });
                 
@@ -585,9 +590,9 @@
                 // Position at LED wall center (will be called when LED wall loads)
                 positionModelAtLedWall();
                 
-                console.log('Sample model loaded');
+                console.log('Man model loaded');
             }, undefined, (error) => {
-                console.error('Error loading sample model:', error);
+                console.error('Error loading man model:', error);
             });
         }
 
