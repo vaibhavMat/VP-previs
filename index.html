@@ -11,8 +11,9 @@
             box-sizing: border-box;
         }
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
             overflow: hidden;
+            background: #202124;
         }
         #canvas-container {
             width: 100vw;
@@ -20,196 +21,334 @@
         }
         .ui-panel {
             position: fixed;
-            top: 16px;
-            right: 0;
-            background: rgba(31, 41, 55, 0.9);
-            padding: 20px;
-            border-radius: 8px 0 0 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-            width: 320px;
-            max-height: 95vh;
-            overflow-y: auto;
-            transition: transform 0.3s ease;
+            top: 20px;
+            right: 20px;
+            background: #ffffff;
+            padding: 0;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 2px 6px 2px rgba(60,64,67,0.15);
+            width: 360px;
+            max-height: calc(100vh - 40px);
+            overflow: hidden;
+            transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
             z-index: 1000;
+            display: flex;
+            flex-direction: column;
         }
         .ui-panel.hidden {
-            transform: translateX(100%);
+            transform: translateX(calc(100% + 20px));
         }
-        .ui-panel h2 {
-            color: white;
-            font-size: 18px;
-            margin-bottom: 16px;
+        .ui-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e8eaed;
+            background: #fff;
+        }
+        .ui-header h2 {
+            color: #202124;
+            font-size: 22px;
+            font-weight: 400;
+            margin: 0;
+            letter-spacing: 0;
+        }
+        .ui-content {
+            overflow-y: auto;
+            flex: 1;
+            padding: 8px 0;
+        }
+        .control-section {
+            padding: 16px 24px;
+            border-bottom: 1px solid #e8eaed;
+        }
+        .control-section:last-child {
+            border-bottom: none;
+        }
+        .section-title {
+            color: #5f6368;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 12px;
         }
         .control-group {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
+        }
+        .control-group:last-child {
+            margin-bottom: 0;
         }
         .control-group label {
             display: block;
-            color: white;
-            font-size: 13px;
-            font-weight: 600;
+            color: #3c4043;
+            font-size: 14px;
+            font-weight: 400;
             margin-bottom: 8px;
         }
         .control-group input[type="file"] {
-            color: white;
-            font-size: 12px;
+            display: none;
+        }
+        .file-upload-btn {
             width: 100%;
+            padding: 10px 24px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            background: #fff;
+            color: #1967d2;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .file-upload-btn:hover {
+            background: #f8f9fa;
+            border-color: #dadce0;
         }
         .control-group input[type="range"] {
             width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: #dadce0;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #1967d2;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .control-group input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+        .control-group input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #1967d2;
+            cursor: pointer;
+            border: none;
+        }
+        .slider-value {
+            color: #5f6368;
+            font-size: 12px;
+            font-weight: 500;
         }
         .success-text {
-            color: #4ade80;
-            font-size: 11px;
+            color: #1e8e3e;
+            font-size: 12px;
             margin-top: 4px;
         }
         .error-text {
-            background: #ef4444;
-            color: white;
-            padding: 8px;
+            background: #fce8e6;
+            color: #c5221f;
+            padding: 12px 16px;
             border-radius: 4px;
-            font-size: 12px;
-            margin-bottom: 16px;
+            font-size: 13px;
+            margin: 16px 24px;
+            border-left: 4px solid #c5221f;
         }
         button {
             width: 100%;
-            padding: 10px;
+            padding: 10px 24px;
             border: none;
             border-radius: 4px;
             font-size: 14px;
+            font-weight: 500;
             cursor: pointer;
             color: white;
             margin-bottom: 8px;
+            transition: all 0.2s;
+            font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
         }
-        .btn-blue { background: #2563eb; }
-        .btn-blue:hover { background: #1d4ed8; }
-        .btn-green { background: #16a34a; }
-        .btn-green:hover { background: #15803d; }
-        .btn-purple { background: #9333ea; }
-        .btn-purple:hover { background: #7e22ce; }
+        .btn-primary {
+            background: #1a73e8;
+        }
+        .btn-primary:hover {
+            background: #1765cc;
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+        }
+        .btn-secondary {
+            background: #fff;
+            color: #1a73e8;
+            border: 1px solid #dadce0;
+        }
+        .btn-secondary:hover {
+            background: #f8f9fa;
+        }
+        .btn-success {
+            background: #1e8e3e;
+        }
+        .btn-success:hover {
+            background: #188038;
+        }
+        .btn-danger {
+            background: #d93025;
+        }
+        .btn-danger:hover {
+            background: #c5221f;
+        }
         .menu-toggle {
             position: fixed;
-            top: 16px;
-            right: 16px;
-            background: rgba(31, 41, 55, 0.9);
-            color: white;
-            padding: 10px 16px;
+            top: 20px;
+            right: 20px;
+            background: #ffffff;
+            color: #5f6368;
+            padding: 12px 20px;
             border: none;
-            border-radius: 8px;
+            border-radius: 24px;
             cursor: pointer;
             font-size: 14px;
+            font-weight: 500;
             z-index: 999;
             display: none;
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 2px 6px 2px rgba(60,64,67,0.15);
+            align-items: center;
+            gap: 8px;
+        }
+        .menu-toggle:hover {
+            background: #f8f9fa;
         }
         .menu-toggle.show {
-            display: block;
-        }
-        .close-btn {
-            position: fixed;
-            top: 16px;
-            right: 320px;
-            background: rgba(31, 41, 55, 0.9);
-            color: white;
-            padding: 8px;
-            border: none;
-            border-radius: 8px 0 0 8px;
-            cursor: pointer;
-            z-index: 1001;
-        }
-        .close-btn.hidden {
-            display: none;
+            display: flex;
         }
         .instructions {
             position: fixed;
-            bottom: 16px;
-            left: 16px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 12px;
-            border-radius: 4px;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(32, 33, 36, 0.95);
+            color: #e8eaed;
+            padding: 12px 16px;
+            border-radius: 8px;
             font-size: 13px;
+            box-shadow: 0 1px 2px 0 rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15);
         }
         .help-text {
-            color: #9ca3af;
-            font-size: 11px;
+            color: #5f6368;
+            font-size: 12px;
+            line-height: 1.6;
             margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e8eaed;
         }
         .help-text p {
             margin-bottom: 4px;
+        }
+        #measurementHelp {
+            color: #f29900;
+            font-weight: 500;
+        }
+        .two-col-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .control-mini label {
+            font-size: 12px;
+            margin-bottom: 6px;
         }
     </style>
 </head>
 <body>
     <div id="canvas-container"></div>
 
-    <button class="menu-toggle" id="menuToggle" onclick="toggleMenu()">◄ Menu</button>
-    <button class="close-btn" id="closeBtn" onclick="toggleMenu()">►</button>
+    <button class="menu-toggle" id="menuToggle" onclick="toggleMenu()">
+        <span>☰</span>
+        Controls
+    </button>
 
     <div class="ui-panel" id="uiPanel">
-        <h2>VP Pre-Vis Controls</h2>
+        <div class="ui-header">
+            <h2>VP Pre-Visualization</h2>
+        </div>
         
-        <div id="errorMsg" class="error-text" style="display: none;"></div>
-        
-        <div class="control-group">
-            <label>Upload Media (.mp4/.mov)</label>
-            <input type="file" id="videoUpload" accept=".mp4,.mov" onchange="handleVideoUpload(event)">
-            <p id="videoName" class="success-text" style="display: none;"></p>
-        </div>
+        <div class="ui-content">
+            <div id="errorMsg" class="error-text" style="display: none;"></div>
+            
+            <!-- Media Section -->
+            <div class="control-section">
+                <div class="section-title">Media</div>
+                
+                <div class="control-group">
+                    <label>LED Wall Media</label>
+                    <label for="videoUpload" class="file-upload-btn">Choose video or image</label>
+                    <input type="file" id="videoUpload" accept=".mp4,.mov,.jpg,.jpeg,.png" onchange="handleVideoUpload(event)">
+                    <p id="videoName" class="success-text" style="display: none;"></p>
+                </div>
 
-        <div class="control-group">
-            <label>Upload Model (.gltf/.glb)</label>
-            <input type="file" id="modelUpload" accept=".gltf,.glb" onchange="handleModelUpload(event)">
-            <p id="modelName" class="success-text" style="display: none;"></p>
-        </div>
+                <div class="control-group">
+                    <label>Subject Model</label>
+                    <label for="modelUpload" class="file-upload-btn">Choose GLTF/GLB file</label>
+                    <input type="file" id="modelUpload" accept=".gltf,.glb" onchange="handleModelUpload(event)">
+                    <p id="modelName" class="success-text" style="display: none;"></p>
+                </div>
 
-        <div class="control-group">
-            <label>Model Scale: <span id="scaleValue">1.00</span></label>
-            <input type="range" id="scaleSlider" min="0.1" max="5" step="0.1" value="1" oninput="updateScale(this.value)">
-        </div>
-
-        <div class="control-group">
-            <label>Movement Speed: <span id="speedValue">0.5</span></label>
-            <input type="range" id="speedSlider" min="0.1" max="2" step="0.1" value="0.5" oninput="updateSpeed(this.value)">
-        </div>
-
-        <div class="control-group">
-            <label>Scene Brightness: <span id="brightnessValue">1.0</span></label>
-            <input type="range" id="brightnessSlider" min="0.2" max="3" step="0.1" value="1.0" oninput="updateBrightness(this.value)">
-        </div>
-
-        <div class="control-group">
-            <label>Camera Settings</label>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
-                <div>
-                    <label style="font-size: 11px; margin-bottom: 4px;">FOV: <span id="fovValue">75</span>°</label>
-                    <input type="range" id="fovSlider" min="20" max="120" step="1" value="75" oninput="updateFOV(this.value)" style="width: 100%;">
+                <div class="control-group">
+                    <label>Model Scale <span class="slider-value" id="scaleValue">1.00</span></label>
+                    <input type="range" id="scaleSlider" min="0.1" max="5" step="0.1" value="1" oninput="updateScale(this.value)">
                 </div>
             </div>
-        </div>
 
-        <div class="control-group">
-            <label>Measurement Unit</label>
-            <button class="btn-blue" id="unitToggle" onclick="toggleUnit()">Imperial (ft/in)</button>
-        </div>
+            <!-- Scene Section -->
+            <div class="control-section">
+                <div class="section-title">Scene</div>
+                
+                <div class="control-group">
+                    <label>Brightness <span class="slider-value" id="brightnessValue">1.0</span></label>
+                    <input type="range" id="brightnessSlider" min="0.2" max="3" step="0.1" value="1.0" oninput="updateBrightness(this.value)">
+                </div>
 
-        <div class="control-group">
-            <label>Measurement Tool</label>
-            <button class="btn-blue" id="measurementToggle" onclick="toggleMeasurement()">Activate Measurement</button>
-        </div>
+                <div class="control-group">
+                    <label>Movement Speed <span class="slider-value" id="speedValue">0.5</span></label>
+                    <input type="range" id="speedSlider" min="0.1" max="2" step="0.1" value="0.5" oninput="updateSpeed(this.value)">
+                </div>
+            </div>
 
-        <button class="btn-green" onclick="focusOnObject()">Focus on Object</button>
-        <button class="btn-green" id="exitFocusBtn" onclick="exitFocusMode()" style="display: none;">Exit Focus Mode (WASD)</button>
-        <button class="btn-purple" onclick="takeScreenshot()">Take Screenshot</button>
+            <!-- Camera Section -->
+            <div class="control-section">
+                <div class="section-title">Camera</div>
+                
+                <div class="control-group">
+                    <label>Focal Length <span class="slider-value" id="fovValue">50mm</span></label>
+                    <input type="range" id="fovSlider" min="20" max="120" step="1" value="75" oninput="updateFOV(this.value)">
+                </div>
+            </div>
 
-        <div class="help-text">
-            <p>Navigation: WASD + Mouse</p>
-            <p>Vertical: Q (down) / E (up)</p>
-            <p id="measurementHelp" style="display: none; color: #fbbf24;">Measurement Active: Click A → Click B → Click away to clear</p>
+            <!-- Tools Section -->
+            <div class="control-section">
+                <div class="section-title">Tools</div>
+                
+                <div class="control-group">
+                    <button class="btn-secondary" id="unitToggle" onclick="toggleUnit()">Imperial (ft/in)</button>
+                </div>
+
+                <div class="control-group">
+                    <button class="btn-secondary" id="measurementToggle" onclick="toggleMeasurement()">Activate Measurement</button>
+                </div>
+
+                <div class="control-group">
+                    <button class="btn-success" onclick="focusOnObject()">Focus on Object</button>
+                    <button class="btn-success" id="exitFocusBtn" onclick="exitFocusMode()" style="display: none;">Exit Focus Mode</button>
+                </div>
+
+                <div class="control-group">
+                    <button class="btn-primary" onclick="takeScreenshot()">Take Screenshot</button>
+                </div>
+
+                <div class="help-text">
+                    <p><strong>Navigation</strong></p>
+                    <p>WASD + Mouse • Q/E for vertical</p>
+                    <p id="measurementHelp" style="display: none;">Click A → B → Click away to clear</p>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="instructions">
-        Click canvas to enable mouse look | WASD to move | Q/E for vertical | ESC to unlock cursor
+        <strong>Navigation:</strong> Click canvas to enable mouse look • WASD to move • Q/E for vertical • ESC to unlock
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -268,6 +407,13 @@
             directionalLight.position.set(5, 10, 5);
             scene.add(directionalLight);
 
+            // Add floor grid (1m x 1m squares)
+            const gridSize = 50; // 50 meters total
+            const divisions = 50; // 50 divisions = 1m squares
+            gridHelper = new THREE.GridHelper(gridSize, divisions, 0xffffff, 0x666666);
+            gridHelper.position.y = 0; // At floor level
+            scene.add(gridHelper);
+
             clock = new THREE.Clock();
 
             // Load hardcoded models
@@ -288,21 +434,19 @@
             if (uploadedModel && ledWall) {
                 const ledBox = new THREE.Box3().setFromObject(ledWall);
                 const ledCenter = ledBox.getCenter(new THREE.Vector3());
-                const ledMin = ledBox.min;
                 const ledMax = ledBox.max;
                 
-                // Simple approach: place model in front based on bounding box
-                // Assume LED wall faces the camera (towards +Z in world space)
+                // Simple approach: place model on the floor (y=0), in front of LED wall
                 const offsetDistance = 2; // Distance in front of LED wall
                 
-                // Position model in front (positive Z from LED wall center)
+                // Position model on floor (y=0), centered horizontally, in front of LED wall
                 uploadedModel.position.set(
                     ledCenter.x, 
-                    ledMin.y, 
+                    0, // Floor level
                     ledMax.z + offsetDistance
                 );
                 
-                console.log('Model positioned in front of LED wall:', uploadedModel.position);
+                console.log('Model positioned on floor in front of LED wall:', uploadedModel.position);
             }
         }
         
@@ -310,17 +454,17 @@
             if (ledWall && camera) {
                 const ledBox = new THREE.Box3().setFromObject(ledWall);
                 const ledCenter = ledBox.getCenter(new THREE.Vector3());
+                const ledMax = ledBox.max;
                 
-                // Get LED wall forward direction
-                const ledWallParent = ledWall.parent;
-                const ledNormal = new THREE.Vector3(0, 0, 1);
-                ledNormal.applyQuaternion(ledWallParent.quaternion);
-                
-                // Position camera in front of LED wall
+                // Position camera in front of LED wall (positive Z)
                 const cameraDistance = 5;
-                const cameraPosition = ledCenter.clone().add(ledNormal.multiplyScalar(cameraDistance));
+                const cameraPosition = new THREE.Vector3(
+                    ledCenter.x,
+                    ledCenter.y,
+                    ledMax.z + cameraDistance
+                );
                 
-                camera.position.set(cameraPosition.x, ledCenter.y, cameraPosition.z);
+                camera.position.copy(cameraPosition);
                 camera.lookAt(ledCenter);
                 
                 // Set initial yaw and pitch for first-person controls
@@ -341,6 +485,12 @@
                 model.traverse((child) => {
                     if (child.isMesh) {
                         child.material.roughness = 1;
+                        // Store environment meshes for brightness control
+                        environmentMeshes.push(child);
+                        // Store original color for brightness adjustments
+                        if (child.material.map) {
+                            child.material.userData.originalMap = child.material.map.clone();
+                        }
                     }
                 });
                 model.name = '_environment';
@@ -436,6 +586,9 @@
         let yaw = 0;
         let pitch = 0;
         let ambientLight, directionalLight;
+        let allLedWalls = []; // Store all LED wall meshes
+        let environmentMeshes = []; // Store environment meshes for brightness control
+        let gridHelper = null; // Floor grid
 
         function onMouseMove(e) {
             if (firstPerson.enabled && document.pointerLockElement === renderer.domElement) {
@@ -470,7 +623,12 @@
                 const intersects = raycaster.intersectObjects(scene.children, true);
 
                 if (intersects.length > 0) {
-                    const point = intersects[0].point;
+                    let point = intersects[0].point.clone();
+                    
+                    // Snap to grid (1m increments)
+                    point.x = Math.round(point.x);
+                    point.y = Math.round(point.y);
+                    point.z = Math.round(point.z);
 
                     if (!measurement.pointA) {
                         measurement.pointA = point;
@@ -579,32 +737,58 @@
             const file = e.target.files[0];
             if (!file) return;
 
-            const validTypes = ['video/mp4', 'video/quicktime'];
-            if (!validTypes.includes(file.type)) {
-                showError('Unsupported video format. Please upload .mp4 or .mov files.');
+            const validVideoTypes = ['video/mp4', 'video/quicktime'];
+            const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+            const isVideo = validVideoTypes.includes(file.type);
+            const isImage = validImageTypes.includes(file.type);
+
+            if (!isVideo && !isImage) {
+                showError('Unsupported format. Please upload .mp4, .mov, .jpg, .jpeg, or .png files.');
                 return;
             }
             hideError();
             document.getElementById('videoName').textContent = file.name;
             document.getElementById('videoName').style.display = 'block';
 
-            const video = document.createElement('video');
-            video.src = URL.createObjectURL(file);
-            video.loop = true;
-            video.muted = true;
-            video.play();
-            videoElement = video;
+            const url = URL.createObjectURL(file);
 
-            const videoTexture = new THREE.VideoTexture(video);
-            videoTexture.rotation = Math.PI; // Rotate 180 degrees
-            videoTexture.center.set(0.5, 0.5); // Set rotation center
-            
-            if (ledWall) {
-                ledWall.material.map = videoTexture;
-                ledWall.material.emissive = new THREE.Color(0xffffff);
-                ledWall.material.emissiveMap = videoTexture;
-                ledWall.material.emissiveIntensity = 2;
-                ledWall.material.needsUpdate = true;
+            if (isVideo) {
+                // Handle video
+                const video = document.createElement('video');
+                video.src = url;
+                video.loop = true;
+                video.muted = true;
+                video.play();
+                videoElement = video;
+
+                const videoTexture = new THREE.VideoTexture(video);
+                videoTexture.rotation = Math.PI;
+                videoTexture.center.set(0.5, 0.5);
+                
+                // Apply video to ALL LED wall meshes
+                allLedWalls.forEach((ledWallMesh) => {
+                    ledWallMesh.material.map = videoTexture;
+                    ledWallMesh.material.emissive = new THREE.Color(0xffffff);
+                    ledWallMesh.material.emissiveMap = videoTexture;
+                    ledWallMesh.material.emissiveIntensity = 2;
+                    ledWallMesh.material.needsUpdate = true;
+                });
+            } else {
+                // Handle image
+                const textureLoader = new THREE.TextureLoader();
+                textureLoader.load(url, (texture) => {
+                    texture.rotation = Math.PI;
+                    texture.center.set(0.5, 0.5);
+                    
+                    // Apply image to ALL LED wall meshes
+                    allLedWalls.forEach((ledWallMesh) => {
+                        ledWallMesh.material.map = texture;
+                        ledWallMesh.material.emissive = new THREE.Color(0xffffff);
+                        ledWallMesh.material.emissiveMap = texture;
+                        ledWallMesh.material.emissiveIntensity = 2;
+                        ledWallMesh.material.needsUpdate = true;
+                    });
+                });
             }
         }
 
@@ -678,17 +862,32 @@
             sceneBrightness = parseFloat(value);
             document.getElementById('brightnessValue').textContent = sceneBrightness.toFixed(1);
             
+            // Update lights
             if (ambientLight) {
                 ambientLight.intensity = 0.6 * sceneBrightness;
             }
             if (directionalLight) {
                 directionalLight.intensity = 0.4 * sceneBrightness;
             }
+            
+            // Brighten environment textures
+            environmentMeshes.forEach((mesh) => {
+                if (mesh.material.color) {
+                    // Adjust material color to simulate brightness
+                    const brightnessFactor = Math.min(sceneBrightness, 3);
+                    mesh.material.color.setRGB(brightnessFactor, brightnessFactor, brightnessFactor);
+                    mesh.material.needsUpdate = true;
+                }
+            });
         }
 
         function updateFOV(value) {
             const fov = parseFloat(value);
-            document.getElementById('fovValue').textContent = fov;
+            // Convert FOV to approximate focal length (assuming 35mm sensor width)
+            const sensorWidth = 36; // 35mm full frame
+            const focalLength = (sensorWidth / 2) / Math.tan((fov * Math.PI / 180) / 2);
+            
+            document.getElementById('fovValue').textContent = Math.round(focalLength) + 'mm';
             
             if (camera) {
                 camera.fov = fov;
@@ -713,7 +912,7 @@
             
             if (measurementMode) {
                 btn.textContent = 'Deactivate Measurement';
-                btn.style.background = '#dc2626'; // Red when active
+                btn.className = 'btn-danger';
                 helpText.style.display = 'block';
                 
                 // Exit pointer lock to allow clicking
@@ -722,7 +921,7 @@
                 }
             } else {
                 btn.textContent = 'Activate Measurement';
-                btn.style.background = '#2563eb'; // Blue when inactive
+                btn.className = 'btn-secondary';
                 helpText.style.display = 'none';
                 clearMeasurement();
             }
@@ -797,17 +996,9 @@
         function toggleMenu() {
             const panel = document.getElementById('uiPanel');
             const toggle = document.getElementById('menuToggle');
-            const closeBtn = document.getElementById('closeBtn');
             
             panel.classList.toggle('hidden');
-            
-            if (panel.classList.contains('hidden')) {
-                toggle.classList.add('show');
-                closeBtn.classList.add('hidden');
-            } else {
-                toggle.classList.remove('show');
-                closeBtn.classList.remove('hidden');
-            }
+            toggle.classList.toggle('show');
         }
 
         function showError(msg) {
