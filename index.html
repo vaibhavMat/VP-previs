@@ -337,6 +337,10 @@
                 <div class="control-group">
                     <button class="btn-primary" onclick="takeScreenshot()">Take Screenshot</button>
                 </div>
+                
+                <div class="control-group">
+                    <button class="btn-secondary" id="galleryToggle" onclick="toggleGallery()">Show Gallery</button>
+                </div>
 
                 <div class="help-text">
                     <p><strong>Navigation</strong></p>
@@ -349,6 +353,20 @@
 
     <div class="instructions">
         <strong>Navigation:</strong> Click canvas to enable mouse look • WASD to move • Q/E for vertical • ESC to unlock
+    </div>
+    
+    <!-- Gallery -->
+    <div class="gallery-container hidden" id="galleryContainer">
+        <div class="gallery-header">
+            <h3>Screenshots (<span id="screenshotCount">0</span>)</h3>
+            <div class="gallery-header-actions">
+                <button class="icon-btn" onclick="clearGallery()" title="Clear all">Clear All</button>
+                <button class="icon-btn" onclick="toggleGallery()" title="Close">✕</button>
+            </div>
+        </div>
+        <div class="gallery-content" id="galleryContent">
+            <div class="gallery-empty">No screenshots yet. Take a screenshot to see it here!</div>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -589,6 +607,7 @@
         let allLedWalls = []; // Store all LED wall meshes
         let environmentMeshes = []; // Store environment meshes for brightness control
         let gridHelper = null; // Floor grid
+        let screenshots = []; // Store screenshot data URLs
 
         function onMouseMove(e) {
             if (firstPerson.enabled && document.pointerLockElement === renderer.domElement) {
@@ -758,6 +777,7 @@
                 video.src = url;
                 video.loop = true;
                 video.muted = true;
+                video.playsInline = true;
                 video.play();
                 videoElement = video;
 
@@ -773,10 +793,14 @@
                     ledWallMesh.material.emissiveIntensity = 2;
                     ledWallMesh.material.needsUpdate = true;
                 });
+                
+                console.log('Video loaded and applied to', allLedWalls.length, 'LED walls');
             } else {
                 // Handle image
-                const textureLoader = new THREE.TextureLoader();
-                textureLoader.load(url, (texture) => {
+                const img = new Image();
+                img.onload = function() {
+                    const texture = new THREE.Texture(img);
+                    texture.needsUpdate = true;
                     texture.rotation = Math.PI;
                     texture.center.set(0.5, 0.5);
                     
@@ -788,7 +812,10 @@
                         ledWallMesh.material.emissiveIntensity = 2;
                         ledWallMesh.material.needsUpdate = true;
                     });
-                });
+                    
+                    console.log('Image loaded and applied to', allLedWalls.length, 'LED walls');
+                };
+                img.src = url;
             }
         }
 
