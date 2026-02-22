@@ -273,7 +273,15 @@
                 <div class="section-title">Media</div>
                 
                 <div class="control-group">
-                    <label>LED Wall Media</label>
+                    <label>LED Wall Background</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <button class="btn-secondary" onclick="loadBackground('rooftop')">Rooftop</button>
+                        <button class="btn-secondary" onclick="loadBackground('theatre')">Theatre</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Custom Media (Optional)</label>
                     <label for="videoUpload" class="file-upload-btn">Choose video or image</label>
                     <input type="file" id="videoUpload" accept=".mp4,.mov,.jpg,.jpeg,.png" onchange="handleVideoUpload(event)">
                     <p id="videoName" class="success-text" style="display: none;"></p>
@@ -752,6 +760,30 @@
         }
 
         // UI Functions
+        function loadBackground(type) {
+            const filename = type === 'rooftop' ? './rooftop.jpg' : './theatre.jpg';
+            
+            const textureLoader = new THREE.TextureLoader();
+            textureLoader.load(filename, (texture) => {
+                texture.rotation = Math.PI;
+                texture.center.set(0.5, 0.5);
+                
+                // Apply image to ALL LED wall meshes
+                allLedWalls.forEach((ledWallMesh) => {
+                    ledWallMesh.material.map = texture;
+                    ledWallMesh.material.emissive = new THREE.Color(0xffffff);
+                    ledWallMesh.material.emissiveMap = texture;
+                    ledWallMesh.material.emissiveIntensity = 2;
+                    ledWallMesh.material.needsUpdate = true;
+                });
+                
+                console.log(type + ' background loaded');
+            }, undefined, (error) => {
+                console.error('Error loading ' + type + ' background:', error);
+                showError('Failed to load ' + type + ' background. Make sure ' + filename + ' exists in your repository.');
+            });
+        }
+        
         function handleVideoUpload(e) {
             const file = e.target.files[0];
             if (!file) return;
