@@ -566,6 +566,37 @@
             font-variant-numeric: tabular-nums;
         }
 
+        .slider-input {
+            width: 58px;
+            min-width: 58px;
+            height: 28px;
+            border: 1px solid var(--md-outline-variant);
+            border-radius: var(--md-shape-sm);
+            padding: 0 6px;
+            font-size: 12px;
+            font-family: 'Google Sans Text', sans-serif;
+            font-weight: 500;
+            color: var(--md-on-surface);
+            background: var(--md-surface-container-lowest);
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+            outline: none;
+        }
+
+        .slider-input:focus {
+            border-color: var(--md-primary);
+            border-width: 2px;
+            padding: 0 5px;
+        }
+
+        .slider-input::-webkit-inner-spin-button {
+            opacity: 0;
+        }
+
+        .slider-input:hover::-webkit-inner-spin-button {
+            opacity: 1;
+        }
+
         input[type="range"] {
             -webkit-appearance: none;
             appearance: none;
@@ -1135,48 +1166,48 @@
                     <div class="slider-row">
                         <span class="slider-label">OBJ Scale</span>
                         <input type="range" id="objScale" min="0.01" max="5.0" step="0.01" value="1.00" oninput="updateModelScale()">
-                        <span class="slider-value" id="objScaleVal">1.00</span>
+                        <input type="number" class="slider-input" id="objScaleVal" value="1.00" step="0.01" onchange="document.getElementById('objScale').value=this.value;updateModelScale()">
                     </div>
                     <div class="slider-row" style="margin-top:8px;">
                         <span class="slider-label">Model X</span>
                         <input type="range" id="modelX" min="-20" max="20" step="0.1" value="-5.0" oninput="updateModelPosition()">
-                        <span class="slider-value" id="modelXVal">-5.0</span>
+                        <input type="number" class="slider-input" id="modelXVal" value="-5.0" step="0.1" onchange="document.getElementById('modelX').value=this.value;updateModelPosition()">
                     </div>
                     <div class="slider-row" style="margin-top:8px;">
                         <span class="slider-label">Model Y</span>
                         <input type="range" id="modelY" min="-5" max="10" step="0.1" value="0.0" oninput="updateModelPosition()">
-                        <span class="slider-value" id="modelYVal">0.0</span>
+                        <input type="number" class="slider-input" id="modelYVal" value="0.0" step="0.1" onchange="document.getElementById('modelY').value=this.value;updateModelPosition()">
                     </div>
                     <div class="slider-row" style="margin-top:8px;">
                         <span class="slider-label">Model Z</span>
                         <input type="range" id="modelZ" min="-20" max="20" step="0.1" value="2.5" oninput="updateModelPosition()">
-                        <span class="slider-value" id="modelZVal">2.5</span>
+                        <input type="number" class="slider-input" id="modelZVal" value="2.5" step="0.1" onchange="document.getElementById('modelZ').value=this.value;updateModelPosition()">
                     </div>
                     <div style="font-size:11px; color:var(--md-on-surface-variant); font-weight:500; margin-bottom:6px; margin-top:12px;">Texture Controls</div>
                     <div class="slider-row">
                         <span class="slider-label">H Stretch</span>
                         <input type="range" id="texScaleX" min="-3.0" max="3.0" step="0.05" value="-0.80" oninput="updateTexture()">
-                        <span class="slider-value" id="texScaleXVal">-0.80</span>
+                        <input type="number" class="slider-input" id="texScaleXVal" value="-0.80" step="0.05" onchange="document.getElementById('texScaleX').value=this.value;updateTexture()">
                     </div>
                     <div class="slider-row" style="margin-top:8px;">
                         <span class="slider-label">V Stretch</span>
                         <input type="range" id="texScaleY" min="-3.0" max="3.0" step="0.05" value="-0.50" oninput="updateTexture()">
-                        <span class="slider-value" id="texScaleYVal">-0.50</span>
+                        <input type="number" class="slider-input" id="texScaleYVal" value="-0.50" step="0.05" onchange="document.getElementById('texScaleY').value=this.value;updateTexture()">
                     </div>
                     <div class="slider-row" style="margin-top:8px;">
                         <span class="slider-label">Rotation</span>
                         <input type="range" id="texRotation" min="0" max="360" step="1" value="182" oninput="updateTexture()">
-                        <span class="slider-value" id="texRotationVal">182°</span>
+                        <input type="number" class="slider-input" id="texRotationVal" value="182" step="1" onchange="document.getElementById('texRotation').value=this.value;updateTexture()">
                     </div>
                     <div class="slider-row" style="margin-top:8px;">
                         <span class="slider-label">H Offset</span>
                         <input type="range" id="texOffsetX" min="-1.0" max="2.0" step="0.01" value="-1.00" oninput="updateTexture()">
-                        <span class="slider-value" id="texOffsetXVal">-1.00</span>
+                        <input type="number" class="slider-input" id="texOffsetXVal" value="-1.00" step="0.01" onchange="document.getElementById('texOffsetX').value=this.value;updateTexture()">
                     </div>
                     <div class="slider-row" style="margin-top:8px;">
                         <span class="slider-label">V Offset</span>
                         <input type="range" id="texOffsetY" min="-1.0" max="2.0" step="0.01" value="0.19" oninput="updateTexture()">
-                        <span class="slider-value" id="texOffsetYVal">0.19</span>
+                        <input type="number" class="slider-input" id="texOffsetYVal" value="0.19" step="0.01" onchange="document.getElementById('texOffsetY').value=this.value;updateTexture()">
                     </div>
                 </div>
             </div>
@@ -1390,13 +1421,23 @@
                 const model = object;
                 model.traverse((child) => {
                     if (child.isMesh) {
-                        child.material = new THREE.MeshStandardMaterial({ color: 0xcccccc, roughness: 1 });
+                        child.material = new THREE.MeshStandardMaterial({ 
+                            color: 0x00ff00, 
+                            emissive: 0x00ff00,
+                            emissiveIntensity: 0.5,
+                            roughness: 1 
+                        });
                     }
                 });
 
                 const box = new THREE.Box3().setFromObject(model);
                 const center = box.getCenter(new THREE.Vector3());
+                const size = box.getSize(new THREE.Vector3());
                 const min = box.min;
+
+                console.log('Man model SIZE:', size.x, size.y, size.z);
+                console.log('Man model CENTER:', center.x, center.y, center.z);
+                console.log('Man model MIN:', min.x, min.y, min.z);
 
                 const pivotGroup = new THREE.Group();
                 pivotGroup.name = '_samplemodel';
@@ -1465,15 +1506,15 @@
 
                 // Update sliders to match preset
                 document.getElementById('texScaleX').value = preset.scaleX;
-                document.getElementById('texScaleXVal').textContent = preset.scaleX.toFixed(2);
+                document.getElementById('texScaleXVal').value = preset.scaleX.toFixed(2);
                 document.getElementById('texScaleY').value = preset.scaleY;
-                document.getElementById('texScaleYVal').textContent = preset.scaleY.toFixed(2);
+                document.getElementById('texScaleYVal').value = preset.scaleY.toFixed(2);
                 document.getElementById('texRotation').value = preset.rotation;
-                document.getElementById('texRotationVal').textContent = preset.rotation + '°';
+                document.getElementById('texRotationVal').value = preset.rotation;
                 document.getElementById('texOffsetX').value = preset.offsetX;
-                document.getElementById('texOffsetXVal').textContent = preset.offsetX.toFixed(2);
+                document.getElementById('texOffsetXVal').value = preset.offsetX.toFixed(2);
                 document.getElementById('texOffsetY').value = preset.offsetY;
-                document.getElementById('texOffsetYVal').textContent = preset.offsetY.toFixed(2);
+                document.getElementById('texOffsetYVal').value = preset.offsetY.toFixed(2);
 
                 texture.repeat.set(preset.scaleX, preset.scaleY);
                 texture.offset.set(preset.offsetX, preset.offsetY);
@@ -1714,7 +1755,7 @@
 
         function updateModelScale() {
             const scale = parseFloat(document.getElementById('objScale').value);
-            document.getElementById('objScaleVal').textContent = scale.toFixed(2);
+            document.getElementById('objScaleVal').value = scale.toFixed(2);
             if (uploadedModel) {
                 uploadedModel.scale.setScalar(scale);
             }
@@ -1724,9 +1765,9 @@
             const x = parseFloat(document.getElementById('modelX').value);
             const y = parseFloat(document.getElementById('modelY').value);
             const z = parseFloat(document.getElementById('modelZ').value);
-            document.getElementById('modelXVal').textContent = x.toFixed(1);
-            document.getElementById('modelYVal').textContent = y.toFixed(1);
-            document.getElementById('modelZVal').textContent = z.toFixed(1);
+            document.getElementById('modelXVal').value = x.toFixed(1);
+            document.getElementById('modelYVal').value = y.toFixed(1);
+            document.getElementById('modelZVal').value = z.toFixed(1);
             if (uploadedModel) {
                 uploadedModel.position.set(x, y, z);
             }
@@ -1743,11 +1784,11 @@
             const offsetX = parseFloat(document.getElementById('texOffsetX').value);
             const offsetY = parseFloat(document.getElementById('texOffsetY').value);
 
-            document.getElementById('texScaleXVal').textContent = scaleX.toFixed(2);
-            document.getElementById('texScaleYVal').textContent = scaleY.toFixed(2);
-            document.getElementById('texRotationVal').textContent = rotation + '°';
-            document.getElementById('texOffsetXVal').textContent = offsetX.toFixed(2);
-            document.getElementById('texOffsetYVal').textContent = offsetY.toFixed(2);
+            document.getElementById('texScaleXVal').value = scaleX.toFixed(2);
+            document.getElementById('texScaleYVal').value = scaleY.toFixed(2);
+            document.getElementById('texRotationVal').value = rotation;
+            document.getElementById('texOffsetXVal').value = offsetX.toFixed(2);
+            document.getElementById('texOffsetYVal').value = offsetY.toFixed(2);
 
             ledWallMeshes.forEach(mesh => {
                 if (mesh.material && mesh.material.map) {
