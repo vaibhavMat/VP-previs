@@ -1137,13 +1137,20 @@
                         <input type="range" id="objScale" min="0.01" max="5.0" step="0.01" value="1.00" oninput="updateModelScale()">
                         <span class="slider-value" id="objScaleVal">1.00</span>
                     </div>
-                    <div style="background:var(--md-surface-container-high); border-radius:var(--md-shape-sm); padding:10px 12px; margin-top:8px; font-variant-numeric:tabular-nums;">
-                        <div style="font-size:11px; color:var(--md-on-surface-variant); margin-bottom:4px; font-weight:500;">Model Position</div>
-                        <div style="font-size:13px; font-family:monospace; color:var(--md-on-surface);">
-                            X: <span id="debugModelX">0.00</span> &nbsp;
-                            Y: <span id="debugModelY">0.00</span> &nbsp;
-                            Z: <span id="debugModelZ">0.00</span>
-                        </div>
+                    <div class="slider-row" style="margin-top:8px;">
+                        <span class="slider-label">Model X</span>
+                        <input type="range" id="modelX" min="-20" max="20" step="0.1" value="-5.0" oninput="updateModelPosition()">
+                        <span class="slider-value" id="modelXVal">-5.0</span>
+                    </div>
+                    <div class="slider-row" style="margin-top:8px;">
+                        <span class="slider-label">Model Y</span>
+                        <input type="range" id="modelY" min="-5" max="10" step="0.1" value="0.0" oninput="updateModelPosition()">
+                        <span class="slider-value" id="modelYVal">0.0</span>
+                    </div>
+                    <div class="slider-row" style="margin-top:8px;">
+                        <span class="slider-label">Model Z</span>
+                        <input type="range" id="modelZ" min="-20" max="20" step="0.1" value="2.5" oninput="updateModelPosition()">
+                        <span class="slider-value" id="modelZVal">2.5</span>
                     </div>
                     <div style="font-size:11px; color:var(--md-on-surface-variant); font-weight:500; margin-bottom:6px; margin-top:12px;">Texture Controls</div>
                     <div class="slider-row">
@@ -1241,6 +1248,7 @@
         let keysPressed = {};
         let yaw = 0, pitch = 0;
         let ledWallGroup = null;
+        let debugMarker = null;
 
         // Per-background texture presets
         const texturePresets = {
@@ -1398,18 +1406,18 @@
 
                 uploadedModel = pivotGroup;
                 scene.add(pivotGroup);
-                pivotGroup.position.set(-5.03, 0.10, 2.51);
-                console.log('Man model loaded, bounds:', box.min, box.max, 'scale:', pivotGroup.scale);
+                // Position from sliders
+                updateModelPosition();
+                console.log('Man model loaded, bounds:', box.min, box.max);
             }, undefined, (err) => console.error('Man model error:', err));
 
-            // Debug: add a visible marker at model target position
-            const markerGeo = new THREE.BoxGeometry(0.3, 0.3, 0.3);
-            const markerMat = new THREE.MeshStandardMaterial({ color: 0xff0000, emissive: 0xff0000, emissiveIntensity: 0.5 });
-            const marker = new THREE.Mesh(markerGeo, markerMat);
-            marker.position.set(-5.03, 0.10, 2.51);
-            marker.name = '_debugMarker';
-            scene.add(marker);
-            }, undefined, (err) => console.error('Man model error:', err));
+            // Debug: add a visible glowing marker above model target position
+            const markerGeo = new THREE.SphereGeometry(0.5, 16, 16);
+            const markerMat = new THREE.MeshStandardMaterial({ color: 0xff0000, emissive: 0xff0000, emissiveIntensity: 2.0 });
+            debugMarker = new THREE.Mesh(markerGeo, markerMat);
+            debugMarker.position.set(-5.0, 1.5, 2.5);
+            debugMarker.name = '_debugMarker';
+            scene.add(debugMarker);
         }
 
         // ===== POSITIONING =====
@@ -1703,6 +1711,7 @@
         }
 
         // ===== MODEL CONTROLS =====
+
         function updateModelScale() {
             const scale = parseFloat(document.getElementById('objScale').value);
             document.getElementById('objScaleVal').textContent = scale.toFixed(2);
@@ -1711,11 +1720,19 @@
             }
         }
 
-        function updateModelDebug() {
-            if (!uploadedModel) return;
-            document.getElementById('debugModelX').textContent = uploadedModel.position.x.toFixed(2);
-            document.getElementById('debugModelY').textContent = uploadedModel.position.y.toFixed(2);
-            document.getElementById('debugModelZ').textContent = uploadedModel.position.z.toFixed(2);
+        function updateModelPosition() {
+            const x = parseFloat(document.getElementById('modelX').value);
+            const y = parseFloat(document.getElementById('modelY').value);
+            const z = parseFloat(document.getElementById('modelZ').value);
+            document.getElementById('modelXVal').textContent = x.toFixed(1);
+            document.getElementById('modelYVal').textContent = y.toFixed(1);
+            document.getElementById('modelZVal').textContent = z.toFixed(1);
+            if (uploadedModel) {
+                uploadedModel.position.set(x, y, z);
+            }
+            if (debugMarker) {
+                debugMarker.position.set(x, y + 1.5, z);
+            }
         }
 
         // ===== DEBUG TEXTURE CONTROLS =====
@@ -1767,7 +1784,6 @@
             processMovement();
             if (controls.enabled) controls.update();
             updateDebugInfo();
-            updateModelDebug();
             renderer.render(scene, camera);
         }
     </script>
