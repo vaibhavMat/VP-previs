@@ -989,7 +989,7 @@
             </div>
             <h1>VP Pre-Vis</h1>
             <p>Virtual Production Pre-Visualization Tool</p>
-            <div style="font-size:11px; color:var(--md-outline); margin-top:-24px; margin-bottom:24px; font-weight:500; letter-spacing:0.5px;">v2.2</div>
+            <div style="font-size:11px; color:var(--md-outline); margin-top:-24px; margin-bottom:24px; font-weight:500; letter-spacing:0.5px;">v2.4</div>
             <div class="md-text-field">
                 <input type="password" id="passwordInput" placeholder=" " autocomplete="off">
                 <label>Access code</label>
@@ -1183,6 +1183,11 @@
                         <span class="slider-label">Model Z</span>
                         <input type="range" id="modelZ" min="-20" max="20" step="0.1" value="2.5" oninput="document.getElementById('modelZVal').value=this.value;updateModelPosition()">
                         <input type="number" class="slider-input" id="modelZVal" value="2.5" step="0.1" oninput="updateModelPosition()">
+                    </div>
+                    <div class="slider-row" style="margin-top:8px;">
+                        <span class="slider-label">Rotation</span>
+                        <input type="range" id="modelRot" min="0" max="360" step="1" value="0" oninput="document.getElementById('modelRotVal').value=this.value;updateModelRotation()">
+                        <input type="number" class="slider-input" id="modelRotVal" value="0" step="1" oninput="updateModelRotation()">
                     </div>
                     <div style="font-size:11px; color:var(--md-on-surface-variant); font-weight:500; margin-bottom:6px; margin-top:12px;">Texture Controls</div>
                     <div class="slider-row">
@@ -1423,9 +1428,7 @@
                 model.traverse((child) => {
                     if (child.isMesh) {
                         child.material = new THREE.MeshStandardMaterial({ 
-                            color: 0x00ff00, 
-                            emissive: 0x00ff00,
-                            emissiveIntensity: 0.5,
+                            color: 0xcccccc, 
                             roughness: 1 
                         });
                     }
@@ -1452,14 +1455,6 @@
                 updateModelPosition();
                 console.log('Man model loaded, bounds:', box.min, box.max);
             }, undefined, (err) => console.error('Man model error:', err));
-
-            // Debug: add a visible glowing marker above model target position
-            const markerGeo = new THREE.SphereGeometry(0.5, 16, 16);
-            const markerMat = new THREE.MeshStandardMaterial({ color: 0xff0000, emissive: 0xff0000, emissiveIntensity: 2.0 });
-            debugMarker = new THREE.Mesh(markerGeo, markerMat);
-            debugMarker.position.set(-5.0, 1.5, 2.5);
-            debugMarker.name = '_debugMarker';
-            scene.add(debugMarker);
         }
 
         // ===== POSITIONING =====
@@ -1774,8 +1769,14 @@
             if (uploadedModel) {
                 uploadedModel.position.set(x, y, z);
             }
-            if (debugMarker) {
-                debugMarker.position.set(x, y + 1.5, z);
+        }
+
+        function updateModelRotation() {
+            const deg = parseFloat(document.getElementById('modelRotVal').value);
+            if (isNaN(deg)) return;
+            document.getElementById('modelRot').value = Math.min(360, Math.max(0, deg));
+            if (uploadedModel) {
+                uploadedModel.rotation.y = deg * Math.PI / 180;
             }
         }
 
