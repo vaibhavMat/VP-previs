@@ -1110,6 +1110,55 @@
                     </div>
                 </div>
             </div>
+
+            <!-- DEBUG -->
+            <div class="panel-card" style="border: 1px solid #fbbc04;">
+                <div class="panel-header">
+                    <span class="material-symbols-outlined filled" style="color:#fbbc04;">bug_report</span>
+                    <h3>Debug</h3>
+                </div>
+                <div class="panel-body">
+                    <div style="background:var(--md-surface-container-high); border-radius:var(--md-shape-sm); padding:10px 12px; margin-bottom:12px; font-variant-numeric:tabular-nums;">
+                        <div style="font-size:11px; color:var(--md-on-surface-variant); margin-bottom:4px; font-weight:500;">Camera Position</div>
+                        <div style="font-size:13px; font-family:monospace; color:var(--md-on-surface);">
+                            X: <span id="debugX">0.00</span> &nbsp;
+                            Y: <span id="debugY">0.00</span> &nbsp;
+                            Z: <span id="debugZ">0.00</span>
+                        </div>
+                        <div style="font-size:11px; color:var(--md-on-surface-variant); margin-top:6px; margin-bottom:4px; font-weight:500;">Camera Rotation</div>
+                        <div style="font-size:13px; font-family:monospace; color:var(--md-on-surface);">
+                            Yaw: <span id="debugYaw">0.00</span> &nbsp;
+                            Pitch: <span id="debugPitch">0.00</span>
+                        </div>
+                    </div>
+                    <div style="font-size:11px; color:var(--md-on-surface-variant); font-weight:500; margin-bottom:6px;">Texture Controls</div>
+                    <div class="slider-row">
+                        <span class="slider-label">H Stretch</span>
+                        <input type="range" id="texScaleX" min="-3.0" max="3.0" step="0.05" value="-1.0" oninput="updateTexture()">
+                        <span class="slider-value" id="texScaleXVal">-1.00</span>
+                    </div>
+                    <div class="slider-row" style="margin-top:8px;">
+                        <span class="slider-label">V Stretch</span>
+                        <input type="range" id="texScaleY" min="-3.0" max="3.0" step="0.05" value="-1.0" oninput="updateTexture()">
+                        <span class="slider-value" id="texScaleYVal">-1.00</span>
+                    </div>
+                    <div class="slider-row" style="margin-top:8px;">
+                        <span class="slider-label">Rotation</span>
+                        <input type="range" id="texRotation" min="0" max="360" step="1" value="0" oninput="updateTexture()">
+                        <span class="slider-value" id="texRotationVal">0°</span>
+                    </div>
+                    <div class="slider-row" style="margin-top:8px;">
+                        <span class="slider-label">H Offset</span>
+                        <input type="range" id="texOffsetX" min="-1.0" max="2.0" step="0.01" value="0.5" oninput="updateTexture()">
+                        <span class="slider-value" id="texOffsetXVal">0.50</span>
+                    </div>
+                    <div class="slider-row" style="margin-top:8px;">
+                        <span class="slider-label">V Offset</span>
+                        <input type="range" id="texOffsetY" min="-1.0" max="2.0" step="0.01" value="0.5" oninput="updateTexture()">
+                        <span class="slider-value" id="texOffsetYVal">0.50</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- BOTTOM MOVEMENT BAR -->
@@ -1385,33 +1434,17 @@
                 texture.wrapS = THREE.RepeatWrapping;
                 texture.wrapT = THREE.RepeatWrapping;
 
-                // Calculate aspect-correct fit
-                const imgAspect = texture.image.width / texture.image.height;
-                let scaleX = 1, scaleY = 1;
+                // Apply current debug slider values
+                const scaleX = parseFloat(document.getElementById('texScaleX').value);
+                const scaleY = parseFloat(document.getElementById('texScaleY').value);
+                const rotation = parseFloat(document.getElementById('texRotation').value);
+                const offsetX = parseFloat(document.getElementById('texOffsetX').value);
+                const offsetY = parseFloat(document.getElementById('texOffsetY').value);
 
-                // Get LED wall dimensions from bounding box
-                if (ledWallMeshes.length > 0) {
-                    const wallBox = new THREE.Box3();
-                    ledWallMeshes.forEach(m => wallBox.expandByObject(m));
-                    const wallSize = wallBox.getSize(new THREE.Vector3());
-
-                    // Wall aspect: use the two largest dimensions (width x height, ignoring depth)
-                    const dims = [wallSize.x, wallSize.y, wallSize.z].sort((a, b) => b - a);
-                    const wallWidth = dims[0];
-                    const wallHeight = dims[1];
-                    const wallAspect = wallWidth / wallHeight;
-
-                    // Fit (contain): scale texture so it fits entirely within the wall
-                    if (imgAspect > wallAspect) {
-                        scaleY = wallAspect / imgAspect;
-                    } else {
-                        scaleX = imgAspect / wallAspect;
-                    }
-                }
-
-                // Negative repeat flips both axes (180° rotation) + aspect fit
-                texture.repeat.set(-scaleX, -scaleY);
-                texture.offset.set((1 + scaleX) / 2, (1 + scaleY) / 2);
+                texture.repeat.set(scaleX, scaleY);
+                texture.offset.set(offsetX, offsetY);
+                texture.center.set(0.5, 0.5);
+                texture.rotation = rotation * Math.PI / 180;
 
                 ledWallMeshes.forEach(mesh => {
                     mesh.material = new THREE.MeshStandardMaterial({
@@ -1643,11 +1676,55 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
 
+        // ===== DEBUG TEXTURE CONTROLS =====
+        function updateTexture() {
+            const scaleX = parseFloat(document.getElementById('texScaleX').value);
+            const scaleY = parseFloat(document.getElementById('texScaleY').value);
+            const rotation = parseFloat(document.getElementById('texRotation').value);
+            const offsetX = parseFloat(document.getElementById('texOffsetX').value);
+            const offsetY = parseFloat(document.getElementById('texOffsetY').value);
+
+            document.getElementById('texScaleXVal').textContent = scaleX.toFixed(2);
+            document.getElementById('texScaleYVal').textContent = scaleY.toFixed(2);
+            document.getElementById('texRotationVal').textContent = rotation + '°';
+            document.getElementById('texOffsetXVal').textContent = offsetX.toFixed(2);
+            document.getElementById('texOffsetYVal').textContent = offsetY.toFixed(2);
+
+            ledWallMeshes.forEach(mesh => {
+                if (mesh.material && mesh.material.map) {
+                    const tex = mesh.material.map;
+                    tex.repeat.set(scaleX, scaleY);
+                    tex.offset.set(offsetX, offsetY);
+                    tex.center.set(0.5, 0.5);
+                    tex.rotation = rotation * Math.PI / 180;
+                    tex.needsUpdate = true;
+
+                    if (mesh.material.emissiveMap) {
+                        mesh.material.emissiveMap.repeat.set(scaleX, scaleY);
+                        mesh.material.emissiveMap.offset.set(offsetX, offsetY);
+                        mesh.material.emissiveMap.center.set(0.5, 0.5);
+                        mesh.material.emissiveMap.rotation = rotation * Math.PI / 180;
+                        mesh.material.emissiveMap.needsUpdate = true;
+                    }
+                }
+            });
+        }
+
+        function updateDebugInfo() {
+            if (!camera) return;
+            document.getElementById('debugX').textContent = camera.position.x.toFixed(2);
+            document.getElementById('debugY').textContent = camera.position.y.toFixed(2);
+            document.getElementById('debugZ').textContent = camera.position.z.toFixed(2);
+            document.getElementById('debugYaw').textContent = yaw.toFixed(2);
+            document.getElementById('debugPitch').textContent = pitch.toFixed(2);
+        }
+
         // ===== ANIMATE =====
         function animate() {
             requestAnimationFrame(animate);
             processMovement();
             if (controls.enabled) controls.update();
+            updateDebugInfo();
             renderer.render(scene, camera);
         }
     </script>
