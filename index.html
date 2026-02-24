@@ -1350,7 +1350,7 @@
                 normal.set(1, 0, 0);
             }
 
-            camera.position.set(center.x + normal.x * 8, 1.6, center.z + normal.z * 8);
+            camera.position.set(center.x + normal.x * 14, 1.6, center.z + normal.z * 14);
             yaw = Math.atan2(-normal.x, -normal.z);
             pitch = 0;
             updateCameraRotation();
@@ -1384,6 +1384,35 @@
                 texture.flipY = false;
                 texture.center.set(0.5, 0.5);
                 texture.rotation = Math.PI;
+
+                // Calculate aspect-correct fit
+                const imgAspect = texture.image.width / texture.image.height;
+
+                // Get LED wall dimensions from bounding box
+                if (ledWallMeshes.length > 0) {
+                    const wallBox = new THREE.Box3();
+                    ledWallMeshes.forEach(m => wallBox.expandByObject(m));
+                    const wallSize = wallBox.getSize(new THREE.Vector3());
+
+                    // Wall aspect: use the two largest dimensions (width x height, ignoring depth)
+                    const dims = [wallSize.x, wallSize.y, wallSize.z].sort((a, b) => b - a);
+                    const wallWidth = dims[0];
+                    const wallHeight = dims[1];
+                    const wallAspect = wallWidth / wallHeight;
+
+                    // Fit (contain): scale texture so it fits entirely within the wall
+                    if (imgAspect > wallAspect) {
+                        // Image is wider than wall — fit to width, letterbox top/bottom
+                        const scale = wallAspect / imgAspect;
+                        texture.repeat.set(1, scale);
+                        texture.offset.set(0, (1 - scale) / 2);
+                    } else {
+                        // Image is taller than wall — fit to height, pillarbox left/right
+                        const scale = imgAspect / wallAspect;
+                        texture.repeat.set(scale, 1);
+                        texture.offset.set((1 - scale) / 2, 0);
+                    }
+                }
 
                 ledWallMeshes.forEach(mesh => {
                     mesh.material = new THREE.MeshStandardMaterial({
