@@ -1398,8 +1398,17 @@
 
                 uploadedModel = pivotGroup;
                 scene.add(pivotGroup);
-                positionModelAtLedWall();
-                console.log('Man model loaded');
+                pivotGroup.position.set(-5.03, 0.10, 2.51);
+                console.log('Man model loaded, bounds:', box.min, box.max, 'scale:', pivotGroup.scale);
+            }, undefined, (err) => console.error('Man model error:', err));
+
+            // Debug: add a visible marker at model target position
+            const markerGeo = new THREE.BoxGeometry(0.3, 0.3, 0.3);
+            const markerMat = new THREE.MeshStandardMaterial({ color: 0xff0000, emissive: 0xff0000, emissiveIntensity: 0.5 });
+            const marker = new THREE.Mesh(markerGeo, markerMat);
+            marker.position.set(-5.03, 0.10, 2.51);
+            marker.name = '_debugMarker';
+            scene.add(marker);
             }, undefined, (err) => console.error('Man model error:', err));
         }
 
