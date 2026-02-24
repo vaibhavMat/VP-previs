@@ -1382,11 +1382,12 @@
             textureLoader.load('./' + filename, (texture) => {
                 texture.encoding = THREE.sRGBEncoding;
                 texture.flipY = false;
-                texture.center.set(0.5, 0.5);
-                texture.rotation = Math.PI;
+                texture.wrapS = THREE.RepeatWrapping;
+                texture.wrapT = THREE.RepeatWrapping;
 
                 // Calculate aspect-correct fit
                 const imgAspect = texture.image.width / texture.image.height;
+                let scaleX = 1, scaleY = 1;
 
                 // Get LED wall dimensions from bounding box
                 if (ledWallMeshes.length > 0) {
@@ -1402,17 +1403,15 @@
 
                     // Fit (contain): scale texture so it fits entirely within the wall
                     if (imgAspect > wallAspect) {
-                        // Image is wider than wall — fit to width, letterbox top/bottom
-                        const scale = wallAspect / imgAspect;
-                        texture.repeat.set(1, scale);
-                        texture.offset.set(0, (1 - scale) / 2);
+                        scaleY = wallAspect / imgAspect;
                     } else {
-                        // Image is taller than wall — fit to height, pillarbox left/right
-                        const scale = imgAspect / wallAspect;
-                        texture.repeat.set(scale, 1);
-                        texture.offset.set((1 - scale) / 2, 0);
+                        scaleX = imgAspect / wallAspect;
                     }
                 }
+
+                // Negative repeat flips both axes (180° rotation) + aspect fit
+                texture.repeat.set(-scaleX, -scaleY);
+                texture.offset.set((1 + scaleX) / 2, (1 + scaleY) / 2);
 
                 ledWallMeshes.forEach(mesh => {
                     mesh.material = new THREE.MeshStandardMaterial({
