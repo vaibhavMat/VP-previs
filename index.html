@@ -1131,21 +1131,35 @@
                             Pitch: <span id="debugPitch">0.00</span>
                         </div>
                     </div>
-                    <div style="font-size:11px; color:var(--md-on-surface-variant); font-weight:500; margin-bottom:6px;">Texture Controls</div>
+                    <div style="font-size:11px; color:var(--md-on-surface-variant); font-weight:500; margin-bottom:6px; margin-top:12px;">Model Controls</div>
+                    <div class="slider-row">
+                        <span class="slider-label">OBJ Scale</span>
+                        <input type="range" id="objScale" min="0.01" max="5.0" step="0.01" value="1.00" oninput="updateModelScale()">
+                        <span class="slider-value" id="objScaleVal">1.00</span>
+                    </div>
+                    <div style="background:var(--md-surface-container-high); border-radius:var(--md-shape-sm); padding:10px 12px; margin-top:8px; font-variant-numeric:tabular-nums;">
+                        <div style="font-size:11px; color:var(--md-on-surface-variant); margin-bottom:4px; font-weight:500;">Model Position</div>
+                        <div style="font-size:13px; font-family:monospace; color:var(--md-on-surface);">
+                            X: <span id="debugModelX">0.00</span> &nbsp;
+                            Y: <span id="debugModelY">0.00</span> &nbsp;
+                            Z: <span id="debugModelZ">0.00</span>
+                        </div>
+                    </div>
+                    <div style="font-size:11px; color:var(--md-on-surface-variant); font-weight:500; margin-bottom:6px; margin-top:12px;">Texture Controls</div>
                     <div class="slider-row">
                         <span class="slider-label">H Stretch</span>
-                        <input type="range" id="texScaleX" min="-3.0" max="3.0" step="0.05" value="-0.65" oninput="updateTexture()">
-                        <span class="slider-value" id="texScaleXVal">-0.65</span>
+                        <input type="range" id="texScaleX" min="-3.0" max="3.0" step="0.05" value="-0.80" oninput="updateTexture()">
+                        <span class="slider-value" id="texScaleXVal">-0.80</span>
                     </div>
                     <div class="slider-row" style="margin-top:8px;">
                         <span class="slider-label">V Stretch</span>
-                        <input type="range" id="texScaleY" min="-3.0" max="3.0" step="0.05" value="-0.45" oninput="updateTexture()">
-                        <span class="slider-value" id="texScaleYVal">-0.45</span>
+                        <input type="range" id="texScaleY" min="-3.0" max="3.0" step="0.05" value="-0.50" oninput="updateTexture()">
+                        <span class="slider-value" id="texScaleYVal">-0.50</span>
                     </div>
                     <div class="slider-row" style="margin-top:8px;">
                         <span class="slider-label">Rotation</span>
-                        <input type="range" id="texRotation" min="0" max="360" step="1" value="179" oninput="updateTexture()">
-                        <span class="slider-value" id="texRotationVal">179°</span>
+                        <input type="range" id="texRotation" min="0" max="360" step="1" value="182" oninput="updateTexture()">
+                        <span class="slider-value" id="texRotationVal">182°</span>
                     </div>
                     <div class="slider-row" style="margin-top:8px;">
                         <span class="slider-label">H Offset</span>
@@ -1154,8 +1168,8 @@
                     </div>
                     <div class="slider-row" style="margin-top:8px;">
                         <span class="slider-label">V Offset</span>
-                        <input type="range" id="texOffsetY" min="-1.0" max="2.0" step="0.01" value="-0.04" oninput="updateTexture()">
-                        <span class="slider-value" id="texOffsetYVal">-0.04</span>
+                        <input type="range" id="texOffsetY" min="-1.0" max="2.0" step="0.01" value="0.19" oninput="updateTexture()">
+                        <span class="slider-value" id="texOffsetYVal">0.19</span>
                     </div>
                 </div>
             </div>
@@ -1227,6 +1241,12 @@
         let keysPressed = {};
         let yaw = 0, pitch = 0;
         let ledWallGroup = null;
+
+        // Per-background texture presets
+        const texturePresets = {
+            'theatre.jpg': { scaleX: -0.80, scaleY: -0.50, rotation: 182, offsetX: -1.00, offsetY: 0.19 },
+            'samplemedia.jpg': { scaleX: -0.65, scaleY: -0.45, rotation: 179, offsetX: -1.00, offsetY: -0.04 }
+        };
 
         // ===== PASSWORD =====
         function checkPassword() {
@@ -1406,20 +1426,9 @@
         }
 
         function positionModelAtLedWall() {
-            if (!uploadedModel || ledWallMeshes.length === 0) return;
-            const box = new THREE.Box3();
-            ledWallMeshes.forEach(m => box.expandByObject(m));
-            const center = box.getCenter(new THREE.Vector3());
-            const size = box.getSize(new THREE.Vector3());
-
-            let offset = new THREE.Vector3(0, 0, 1);
-            if (size.x > size.z) {
-                offset.set(0, 0, 1);
-            } else {
-                offset.set(1, 0, 0);
-            }
-
-            uploadedModel.position.set(center.x + offset.x * 2, 0, center.z + offset.z * 2);
+            if (!uploadedModel) return;
+            uploadedModel.position.set(-5.03, 0.10, 2.51);
+            updateModelDebug();
         }
 
         // ===== BACKGROUND =====
@@ -1434,17 +1443,25 @@
                 texture.wrapS = THREE.RepeatWrapping;
                 texture.wrapT = THREE.RepeatWrapping;
 
-                // Apply current debug slider values
-                const scaleX = parseFloat(document.getElementById('texScaleX').value);
-                const scaleY = parseFloat(document.getElementById('texScaleY').value);
-                const rotation = parseFloat(document.getElementById('texRotation').value);
-                const offsetX = parseFloat(document.getElementById('texOffsetX').value);
-                const offsetY = parseFloat(document.getElementById('texOffsetY').value);
+                // Apply preset for this background
+                const preset = texturePresets[filename] || { scaleX: -1, scaleY: -1, rotation: 180, offsetX: -1, offsetY: 0 };
 
-                texture.repeat.set(scaleX, scaleY);
-                texture.offset.set(offsetX, offsetY);
+                // Update sliders to match preset
+                document.getElementById('texScaleX').value = preset.scaleX;
+                document.getElementById('texScaleXVal').textContent = preset.scaleX.toFixed(2);
+                document.getElementById('texScaleY').value = preset.scaleY;
+                document.getElementById('texScaleYVal').textContent = preset.scaleY.toFixed(2);
+                document.getElementById('texRotation').value = preset.rotation;
+                document.getElementById('texRotationVal').textContent = preset.rotation + '°';
+                document.getElementById('texOffsetX').value = preset.offsetX;
+                document.getElementById('texOffsetXVal').textContent = preset.offsetX.toFixed(2);
+                document.getElementById('texOffsetY').value = preset.offsetY;
+                document.getElementById('texOffsetYVal').textContent = preset.offsetY.toFixed(2);
+
+                texture.repeat.set(preset.scaleX, preset.scaleY);
+                texture.offset.set(preset.offsetX, preset.offsetY);
                 texture.center.set(0.5, 0.5);
-                texture.rotation = rotation * Math.PI / 180;
+                texture.rotation = preset.rotation * Math.PI / 180;
 
                 ledWallMeshes.forEach(mesh => {
                     mesh.material = new THREE.MeshStandardMaterial({
@@ -1676,6 +1693,22 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
 
+        // ===== MODEL CONTROLS =====
+        function updateModelScale() {
+            const scale = parseFloat(document.getElementById('objScale').value);
+            document.getElementById('objScaleVal').textContent = scale.toFixed(2);
+            if (uploadedModel) {
+                uploadedModel.scale.setScalar(scale);
+            }
+        }
+
+        function updateModelDebug() {
+            if (!uploadedModel) return;
+            document.getElementById('debugModelX').textContent = uploadedModel.position.x.toFixed(2);
+            document.getElementById('debugModelY').textContent = uploadedModel.position.y.toFixed(2);
+            document.getElementById('debugModelZ').textContent = uploadedModel.position.z.toFixed(2);
+        }
+
         // ===== DEBUG TEXTURE CONTROLS =====
         function updateTexture() {
             const scaleX = parseFloat(document.getElementById('texScaleX').value);
@@ -1725,6 +1758,7 @@
             processMovement();
             if (controls.enabled) controls.update();
             updateDebugInfo();
+            updateModelDebug();
             renderer.render(scene, camera);
         }
     </script>
