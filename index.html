@@ -1134,28 +1134,28 @@
                     <div style="font-size:11px; color:var(--md-on-surface-variant); font-weight:500; margin-bottom:6px;">Texture Controls</div>
                     <div class="slider-row">
                         <span class="slider-label">H Stretch</span>
-                        <input type="range" id="texScaleX" min="-3.0" max="3.0" step="0.05" value="-1.0" oninput="updateTexture()">
-                        <span class="slider-value" id="texScaleXVal">-1.00</span>
+                        <input type="range" id="texScaleX" min="-3.0" max="3.0" step="0.05" value="-0.65" oninput="updateTexture()">
+                        <span class="slider-value" id="texScaleXVal">-0.65</span>
                     </div>
                     <div class="slider-row" style="margin-top:8px;">
                         <span class="slider-label">V Stretch</span>
-                        <input type="range" id="texScaleY" min="-3.0" max="3.0" step="0.05" value="-1.0" oninput="updateTexture()">
-                        <span class="slider-value" id="texScaleYVal">-1.00</span>
+                        <input type="range" id="texScaleY" min="-3.0" max="3.0" step="0.05" value="-0.45" oninput="updateTexture()">
+                        <span class="slider-value" id="texScaleYVal">-0.45</span>
                     </div>
                     <div class="slider-row" style="margin-top:8px;">
                         <span class="slider-label">Rotation</span>
-                        <input type="range" id="texRotation" min="0" max="360" step="1" value="0" oninput="updateTexture()">
-                        <span class="slider-value" id="texRotationVal">0°</span>
+                        <input type="range" id="texRotation" min="0" max="360" step="1" value="179" oninput="updateTexture()">
+                        <span class="slider-value" id="texRotationVal">179°</span>
                     </div>
                     <div class="slider-row" style="margin-top:8px;">
                         <span class="slider-label">H Offset</span>
-                        <input type="range" id="texOffsetX" min="-1.0" max="2.0" step="0.01" value="0.5" oninput="updateTexture()">
-                        <span class="slider-value" id="texOffsetXVal">0.50</span>
+                        <input type="range" id="texOffsetX" min="-1.0" max="2.0" step="0.01" value="-1.00" oninput="updateTexture()">
+                        <span class="slider-value" id="texOffsetXVal">-1.00</span>
                     </div>
                     <div class="slider-row" style="margin-top:8px;">
                         <span class="slider-label">V Offset</span>
-                        <input type="range" id="texOffsetY" min="-1.0" max="2.0" step="0.01" value="0.5" oninput="updateTexture()">
-                        <span class="slider-value" id="texOffsetYVal">0.50</span>
+                        <input type="range" id="texOffsetY" min="-1.0" max="2.0" step="0.01" value="-0.04" oninput="updateTexture()">
+                        <span class="slider-value" id="texOffsetYVal">-0.04</span>
                     </div>
                 </div>
             </div>
@@ -1399,9 +1399,9 @@
                 normal.set(1, 0, 0);
             }
 
-            camera.position.set(center.x + normal.x * 14, 1.6, center.z + normal.z * 14);
-            yaw = Math.atan2(-normal.x, -normal.z);
-            pitch = 0;
+            camera.position.set(-4.83, 3.18, -5.78);
+            yaw = -3.20;
+            pitch = -0.04;
             updateCameraRotation();
         }
 
