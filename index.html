@@ -989,7 +989,7 @@
             </div>
             <h1>VP Pre-Vis</h1>
             <p>Virtual Production Pre-Visualization Tool</p>
-            <div style="font-size:11px; color:var(--md-outline); margin-top:-24px; margin-bottom:24px; font-weight:500; letter-spacing:0.5px;">v2.4</div>
+            <div style="font-size:11px; color:var(--md-outline); margin-top:-24px; margin-bottom:24px; font-weight:500; letter-spacing:0.5px;">v2.5</div>
             <div class="md-text-field">
                 <input type="password" id="passwordInput" placeholder=" " autocomplete="off">
                 <label>Access code</label>
@@ -1121,8 +1121,9 @@
                 <div class="panel-body">
                     <div class="slider-row">
                         <span class="slider-label">Focal length</span>
-                        <input type="range" id="fovSlider" min="20" max="120" step="1" value="75" oninput="updateFOV(this.value)">
-                        <span class="slider-value" id="fovValue">50mm</span>
+                        <input type="range" id="fovSlider" min="20" max="120" step="1" value="75" oninput="updateFOV(this.value);document.getElementById('fovInput').value=document.getElementById('fovValue').textContent.replace('mm','')">
+                        <input type="number" class="slider-input" id="fovInput" value="50" step="1" oninput="updateFOVFromMM(this.value)">
+                        <span class="slider-value" style="min-width:20px;">mm</span>
                     </div>
                 </div>
             </div>
@@ -1189,6 +1190,33 @@
                         <input type="range" id="modelRot" min="0" max="360" step="1" value="0" oninput="document.getElementById('modelRotVal').value=this.value;updateModelRotation()">
                         <input type="number" class="slider-input" id="modelRotVal" value="0" step="1" oninput="updateModelRotation()">
                     </div>
+                    <div style="font-size:11px; color:var(--md-on-surface-variant); font-weight:500; margin-bottom:6px; margin-top:12px;">Roof OBJ Controls</div>
+                    <div class="slider-row">
+                        <span class="slider-label">Scale</span>
+                        <input type="range" id="roofScale" min="0.01" max="5.0" step="0.01" value="1.00" oninput="document.getElementById('roofScaleVal').value=this.value;updateRoofScale()">
+                        <input type="number" class="slider-input" id="roofScaleVal" value="1.00" step="0.01" oninput="updateRoofScale()">
+                    </div>
+                    <div class="slider-row" style="margin-top:8px;">
+                        <span class="slider-label">Roof X</span>
+                        <input type="range" id="roofX" min="-20" max="20" step="0.1" value="0" oninput="document.getElementById('roofXVal').value=this.value;updateRoofPosition()">
+                        <input type="number" class="slider-input" id="roofXVal" value="0" step="0.1" oninput="updateRoofPosition()">
+                    </div>
+                    <div class="slider-row" style="margin-top:8px;">
+                        <span class="slider-label">Roof Y</span>
+                        <input type="range" id="roofY" min="-5" max="10" step="0.1" value="0" oninput="document.getElementById('roofYVal').value=this.value;updateRoofPosition()">
+                        <input type="number" class="slider-input" id="roofYVal" value="0" step="0.1" oninput="updateRoofPosition()">
+                    </div>
+                    <div class="slider-row" style="margin-top:8px;">
+                        <span class="slider-label">Roof Z</span>
+                        <input type="range" id="roofZ" min="-20" max="20" step="0.1" value="0" oninput="document.getElementById('roofZVal').value=this.value;updateRoofPosition()">
+                        <input type="number" class="slider-input" id="roofZVal" value="0" step="0.1" oninput="updateRoofPosition()">
+                    </div>
+                    <div class="slider-row" style="margin-top:8px;">
+                        <span class="slider-label">Roof Rot</span>
+                        <input type="range" id="roofRot" min="0" max="360" step="1" value="0" oninput="document.getElementById('roofRotVal').value=this.value;updateRoofRotation()">
+                        <input type="number" class="slider-input" id="roofRotVal" value="0" step="1" oninput="updateRoofRotation()">
+                    </div>
+
                     <div style="font-size:11px; color:var(--md-on-surface-variant); font-weight:500; margin-bottom:6px; margin-top:12px;">Texture Controls</div>
                     <div class="slider-row">
                         <span class="slider-label">H Stretch</span>
@@ -1286,6 +1314,7 @@
         let yaw = 0, pitch = 0;
         let ledWallGroup = null;
         let debugMarker = null;
+        let roofModel = null;
 
         // Per-background texture presets
         const texturePresets = {
@@ -1373,6 +1402,7 @@
             loadEnvironment();
             loadLedWall();
             loadManModel();
+            loadRoofModel();
 
             // Events
             window.addEventListener('resize', onWindowResize);
@@ -1455,6 +1485,36 @@
                 updateModelPosition();
                 console.log('Man model loaded, bounds:', box.min, box.max);
             }, undefined, (err) => console.error('Man model error:', err));
+        }
+
+        function loadRoofModel() {
+            const objLoader = new THREE.OBJLoader();
+            objLoader.load('./roof.obj', (object) => {
+                const model = object;
+                model.traverse((child) => {
+                    if (child.isMesh) {
+                        child.material = new THREE.MeshStandardMaterial({ 
+                            color: 0xcccccc, 
+                            roughness: 1 
+                        });
+                    }
+                });
+
+                const box = new THREE.Box3().setFromObject(model);
+                const center = box.getCenter(new THREE.Vector3());
+                const min = box.min;
+
+                const pivotGroup = new THREE.Group();
+                pivotGroup.name = '_roofmodel';
+                model.position.set(-center.x, -min.y, -center.z);
+                pivotGroup.add(model);
+                pivotGroup.scale.setScalar(1);
+
+                roofModel = pivotGroup;
+                scene.add(pivotGroup);
+                updateRoofPosition();
+                console.log('Roof model loaded, bounds:', box.min, box.max);
+            }, undefined, (err) => console.error('Roof model error:', err));
         }
 
         // ===== POSITIONING =====
@@ -1551,7 +1611,7 @@
             // FOV to focal length (35mm equivalent)
             const focalLength = Math.round(18 / Math.tan((fov * Math.PI / 180) / 2));
             const display = focalLength + 'mm';
-            document.getElementById('fovValue').textContent = display;
+            document.getElementById('fovInput').value = focalLength;
             document.getElementById('focalDisplay').textContent = display;
         }
 
@@ -1778,6 +1838,49 @@
             if (uploadedModel) {
                 uploadedModel.rotation.y = deg * Math.PI / 180;
             }
+        }
+
+        function updateRoofScale() {
+            const scale = parseFloat(document.getElementById('roofScaleVal').value);
+            if (isNaN(scale)) return;
+            document.getElementById('roofScale').value = Math.min(5, Math.max(0.01, scale));
+            if (roofModel) {
+                roofModel.scale.setScalar(scale);
+            }
+        }
+
+        function updateRoofPosition() {
+            const x = parseFloat(document.getElementById('roofXVal').value);
+            const y = parseFloat(document.getElementById('roofYVal').value);
+            const z = parseFloat(document.getElementById('roofZVal').value);
+            if (isNaN(x) || isNaN(y) || isNaN(z)) return;
+            document.getElementById('roofX').value = Math.min(20, Math.max(-20, x));
+            document.getElementById('roofY').value = Math.min(10, Math.max(-5, y));
+            document.getElementById('roofZ').value = Math.min(20, Math.max(-20, z));
+            if (roofModel) {
+                roofModel.position.set(x, y, z);
+            }
+        }
+
+        function updateRoofRotation() {
+            const deg = parseFloat(document.getElementById('roofRotVal').value);
+            if (isNaN(deg)) return;
+            document.getElementById('roofRot').value = Math.min(360, Math.max(0, deg));
+            if (roofModel) {
+                roofModel.rotation.y = deg * Math.PI / 180;
+            }
+        }
+
+        function updateFOVFromMM(mm) {
+            mm = parseFloat(mm);
+            if (isNaN(mm) || mm <= 0) return;
+            // Convert mm focal length to FOV (35mm sensor: 36mm width)
+            const fov = 2 * Math.atan(18 / mm) * (180 / Math.PI);
+            const clampedFov = Math.max(20, Math.min(120, Math.round(fov)));
+            document.getElementById('fovSlider').value = clampedFov;
+            camera.fov = clampedFov;
+            camera.updateProjectionMatrix();
+            document.getElementById('focalDisplay').textContent = Math.round(mm) + 'mm';
         }
 
         // ===== DEBUG TEXTURE CONTROLS =====
