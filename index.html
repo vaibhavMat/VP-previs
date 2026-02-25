@@ -989,7 +989,7 @@
             </div>
             <h1>VP Pre-Vis</h1>
             <p>Virtual Production Pre-Visualization Tool</p>
-            <div style="font-size:11px; color:var(--md-outline); margin-top:-24px; margin-bottom:24px; font-weight:500; letter-spacing:0.5px;">v2.6</div>
+            <div style="font-size:11px; color:var(--md-outline); margin-top:-24px; margin-bottom:24px; font-weight:500; letter-spacing:0.5px;">v2.7</div>
             <div class="md-text-field">
                 <input type="password" id="passwordInput" placeholder=" " autocomplete="off">
                 <label>Access code</label>
@@ -1121,9 +1121,19 @@
                 <div class="panel-body">
                     <div class="slider-row">
                         <span class="slider-label">Focal length</span>
-                        <input type="range" id="fovSlider" min="20" max="120" step="1" value="75" oninput="updateFOV(this.value);document.getElementById('fovInput').value=document.getElementById('fovValue').textContent.replace('mm','')">
+                        <input type="range" id="fovSlider" min="20" max="120" step="1" value="75" oninput="updateFOV(this.value)">
                         <input type="number" class="slider-input" id="fovInput" value="50" step="1" oninput="updateFOVFromMM(this.value)">
                         <span class="slider-value" style="min-width:20px;">mm</span>
+                    </div>
+                    <div class="slider-row" style="margin-top:12px;">
+                        <span class="slider-label">Focus dist</span>
+                        <input type="range" id="focusDist" min="0.5" max="50" step="0.5" value="10" oninput="document.getElementById('focusDistVal').value=this.value;updateDOF()">
+                        <input type="number" class="slider-input" id="focusDistVal" value="10" step="0.5" oninput="updateDOF()">
+                    </div>
+                    <div class="slider-row" style="margin-top:8px;">
+                        <span class="slider-label">Blur amount</span>
+                        <input type="range" id="blurAmount" min="0" max="0.02" step="0.001" value="0" oninput="document.getElementById('blurAmountVal').value=this.value;updateDOF()">
+                        <input type="number" class="slider-input" id="blurAmountVal" value="0" step="0.001" oninput="updateDOF()">
                     </div>
                 </div>
             </div>
@@ -1299,10 +1309,17 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/BokehShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/BokehPass.js"></script>
 
     <script>
         // ===== GLOBAL STATE =====
         let scene, camera, renderer, controls;
+        let composer, bokehPass;
         let ambientLight, directionalLight;
         let ledWallMeshes = [];
         let uploadedModel = null;
@@ -1377,6 +1394,20 @@
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
             renderer.toneMappingExposure = 1.0;
             renderer.outputEncoding = THREE.sRGBEncoding;
+
+            // Postprocessing - Depth of Field
+            composer = new THREE.EffectComposer(renderer);
+            const renderPass = new THREE.RenderPass(scene, camera);
+            composer.addPass(renderPass);
+
+            bokehPass = new THREE.BokehPass(scene, camera, {
+                focus: 10.0,
+                aperture: 0.0,
+                maxblur: 0.01,
+                width: window.innerWidth,
+                height: window.innerHeight
+            });
+            composer.addPass(bokehPass);
 
             // Lights
             ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
@@ -1719,7 +1750,7 @@
 
         // ===== SCREENSHOT =====
         function captureScreenshot() {
-            renderer.render(scene, camera);
+            composer.render();
             const dataUrl = renderer.domElement.toDataURL('image/png');
 
             // Download
@@ -1805,6 +1836,7 @@
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+            if (composer) composer.setSize(window.innerWidth, window.innerHeight);
         }
 
         // ===== MODEL CONTROLS =====
@@ -1883,6 +1915,19 @@
             document.getElementById('focalDisplay').textContent = Math.round(mm) + 'mm';
         }
 
+        function updateDOF() {
+            const focus = parseFloat(document.getElementById('focusDistVal').value);
+            const blur = parseFloat(document.getElementById('blurAmountVal').value);
+            if (isNaN(focus) || isNaN(blur)) return;
+            document.getElementById('focusDist').value = Math.min(50, Math.max(0.5, focus));
+            document.getElementById('blurAmount').value = Math.min(0.02, Math.max(0, blur));
+            if (bokehPass) {
+                bokehPass.uniforms['focus'].value = focus;
+                bokehPass.uniforms['aperture'].value = blur;
+                bokehPass.uniforms['maxblur'].value = Math.min(0.02, blur * 2);
+            }
+        }
+
         // ===== DEBUG TEXTURE CONTROLS =====
         function updateTexture() {
             const scaleX = parseFloat(document.getElementById('texScaleXVal').value);
@@ -1935,7 +1980,7 @@
             processMovement();
             if (controls.enabled) controls.update();
             updateDebugInfo();
-            renderer.render(scene, camera);
+            composer.render();
         }
     </script>
 </body>
