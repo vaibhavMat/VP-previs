@@ -1,0 +1,54 @@
+# ARRIA WILDER PATTON
+New York, NY | arriapatton@me.com | +1 (323) XXX-XXXX | [LinkedIn](https://linkedin.com/in/arriapatton)
+
+---
+
+## PROFILE
+Brand marketing professional with experience in consumer strategy, multicultural market development, and social media management. Proven ability to execute across CPG, entertainment, and operations — combining analytical thinking with creative execution to drive brand growth.
+
+---
+
+## EXPERIENCE
+
+**Brand Ambassador & Hispanic Market Developer** | *Electrolit* | New York, NY | May 2025 – Present
+- Developed and executed multicultural marketing activations targeting Hispanic consumers across NYC retail and event channels
+- Represented brand at high-traffic events and retail locations, driving measurable product awareness and consumer engagement
+- Synthesized customer feedback, competitor intelligence, and event performance data into actionable reports for the marketing team
+
+**Operations & Social Media Specialist** | *Success Academy* | New York, NY | May 2025 – Present
+- Own and manage school's official social media presence across multiple platforms, producing content that drives consistent family engagement
+- Spearhead end-to-end coordination of internal and external events — from logistics and vendor management to communications and live execution
+
+**Brand Strategy Intern** | *Beats By Dre* | April 2024 – May 2024
+- Researched macro Gen-Z consumer trends to inform product positioning and marketing strategy
+- Delivered insights on headphone consumer preferences, contributing to brand strategy recommendations
+
+**Vice President** | *Finance & Investment Club, Skidmore College* | Jan 2024 – May 2024
+- Led peer investment simulations and portfolio analysis sessions, applying real-world market dynamics to student-led investment decisions
+- Assessed competitive market trends and investment opportunities to guide club strategy
+
+**Event, Social Media & Graphic Design Coordinator** | *Women in Business Club, Skidmore College* | Jan 2024 – May 2024
+- Produced marketing collateral and managed social content to grow club visibility and membership
+- Organized mentorship workshops connecting students with professionals across business disciplines
+
+**Small Business Strategy Intern** | *Los Angeles Community College District* | Feb 2022 – Apr 2022
+- Conducted weekly business evaluations using market analysis frameworks to identify performance gaps and growth opportunities
+- Designed brand identity assets (business cards, digital presence audits) to strengthen client market positioning
+
+---
+
+## EDUCATION
+**B.S. Business Management & Administration** | *Skidmore College*, Saratoga Springs, NY | May 2025
+
+---
+
+## SKILLS
+**Marketing & Analytics:** Brandwatch · Salesforce · Social Media Management · Consumer Research · Brand Strategy
+**Tools:** Microsoft Office Suite · Excel · Google Sheets · AI Tools · Canva
+**Languages:** English (Fluent) · Spanish (Beginner) · ASL (Beginner)
+
+---
+
+## VOLUNTEER
+- **Counselor**, Sierra Adventure Camp — Lead supervisor for children with autism
+- **Food Service Provider**, St. Francis Center, LA — Supported food distribution in the Skid Row community
