@@ -3,6 +3,25 @@
 
 ---
 
+## Active Opportunities
+
+### Prospect: Marketing Company — 3D Animation for Social Media
+- **Status:** Meeting scheduled March 17, 2026
+- **Scope:** 3D animation for social media deliverables (non-AI-specific)
+- **Quote:** $2,400/week at $60/hr (two-person team — 20hrs each)
+- **Team:** Self + 1 friend (friend structured as 1099 subcontractor to LLC)
+- **Next step:** Await positive response → file LLC same-day via ZenBusiness → route contract through LLC
+
+### LLC Formation Plan
+- **Service:** ZenBusiness (same-day filing)
+- **State options:** Wyoming or Delaware (lowest fees/friction) — or New York if local address preferred
+- **Critical sequencing:** LLC formed and EIN received BEFORE signing any contract
+- **Contract structure:** LLC → Client (not personal name)
+- **Payroll:** W-2 salary to self must begin before current OPT expires June 6, 2026
+- **Friend's role:** 1099 subcontractor to LLC — not co-owner, keeps visa exposure clean
+
+---
+
 ## 1. Customer Segments
 - **Small businesses / startups** — can't afford traditional agencies, need volume at low cost
 - **Mid-size brands / agencies** — existing marketing budgets, want AI pipeline integration
