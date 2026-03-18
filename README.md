@@ -107,6 +107,13 @@
   - Truist: **$54.05**
   - SoFi: **$488.57**
   - Total liquid: **$3,480.62**
+- **Robinhood:** $500.00 total
+  - $20 in VTI (Vanguard Total Stock Market ETF)
+  - $20 in VWO (Vanguard Emerging Markets ETF)
+  - $20 in VEA (Vanguard Developed Markets ETF)
+  - $20 in BND (Vanguard Total Bond Market ETF)
+  - $20 in LMT (Lockheed Martin)
+  - Remaining ~$400 in cash/uninvested
 - **Chase Credit Card:** $286.14 of $600 limit used (47.7% utilization)
 
 ---
