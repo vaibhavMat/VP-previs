@@ -102,7 +102,11 @@
 - **September–November 2025:** Improving — moved to Seattle, starting to earn through Full Service Enterprises LLC ($500 payments ~3x).
 - **December 2025 onward:** Significant income jump with TEKsystems at ~$1,950/week. Moved to Brooklyn, NY. Started saving via SoFi. Ending balance trend moving upward.
 - **Latest balance (Feb 19, 2026):** **$2,803.07**
-- **Current balance (as of Mar 18, 2026):** **$2,938.00** (checking)
+- **Current balances (as of Mar 18, 2026):**
+  - Chase Checking: **$2,938.00**
+  - Truist: **$54.05**
+  - SoFi: **$488.57**
+  - Total liquid: **$3,480.62**
 - **Chase Credit Card:** $286.14 of $600 limit used (47.7% utilization)
 
 ---
